@@ -1,20 +1,22 @@
 <div style="display:flex;">
 
-<div #element1>
-    <select [(ngModel)]="font1" (ngModelChange)="useFont($event, element1)" >
-        <option *ngFor="let font of fonts" [ngValue]="font"> {{ font.family }}</option>
-    </select>
-    <p>safadé fakdsfé akdsf éaskdfaé dfk</p>
-</div>
+    <div #element1>
+        <select [(ngModel)]="font1" (ngModelChange)="useFont($event, element1)">
+            @for (font of fonts; track font) {
+                <option [ngValue]="font"> {{ font.family }}</option>
+            }
+        </select>
+        <p>safadé fakdsfé akdsf éaskdfaé dfk</p>
+    </div>
 
 
-
-<div #element2>
-    <select [(ngModel)]="font2" (ngModelChange)="useFont($event, element2)" >
-        <option *ngFor="let font of fonts" [ngValue]="font"> {{ font.family }}</option>
-    </select>
-    <p>safadé fakdsfé akdsf éaskdfaé dfk</p>
-</div>
+    <div #element2>
+        <select [(ngModel)]="font2" (ngModelChange)="useFont($event, element2)">
+            @for (font of fonts; track font) {
+                <option [ngValue]="font"> {{ font.family }}</option>
+            }    </select>
+        <p>safadé fakdsfé akdsf éaskdfaé dfk</p>
+    </div>
 
 </div>
 

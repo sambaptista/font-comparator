@@ -65,10 +65,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "font-comparator:build:production"
+                          "buildTarget": "font-comparator:build:production"
                         },
                         "development": {
-                            "browserTarget": "font-comparator:build:development"
+                          "buildTarget": "font-comparator:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "font-comparator:build"
+                      "buildTarget": "font-comparator:build"
                     }
                 },
                 "test": {
