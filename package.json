@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href=/font-comparator/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint --max-warnings 0",
