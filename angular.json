@@ -17,9 +17,10 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "demo",
+                        "outputPath": "docs",
                         "index": "src/index.html",
                         "main": "src/main.ts",
+                        "baseHref": "/font-comparator/",
                         "polyfills": [
                             "zone.js"
                         ],
