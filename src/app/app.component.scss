@@ -1,6 +1,15 @@
-$settingsWidth: 190px;
+$settingsWidth: 200px;
 
-div {
+.selected {
+    color: #00b000
+}
+
+.warn {
+    color: #e10101;
+}
+
+.gap:not(.horizontal) > *:not(:last-child) {
+    margin-bottom: 4px;
 }
 
 .horizontal {
@@ -21,7 +30,7 @@ div {
     display: inline-flex;
     align-items: center;
     padding: 5px 10px;
-    background: rgba(125, 125, 126, 0.2);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     font-weight: normal;
     border: none;
@@ -71,7 +80,7 @@ div {
     background: white;
     color: black;
     padding: 10px 10px 10px 5px;
-    width: $settingsWidth;
+    width: $settingsWidth - 20px;
     display: flex;
     flex-direction: column;
 
@@ -79,19 +88,6 @@ div {
         display: flex;
         margin-bottom: 2px;
         border-radius: 4px;
-        padding: 7px 5px;
-        height: 20px;
-        align-items: center;
-
-
-        &:hover {
-            background: rgba(0, 0, 0, 0.1)
-        }
-
-        label {
-            flex: 1;
-            font-weight: bold;
-        }
     }
 
 
@@ -127,17 +123,6 @@ div {
 
     }
 
-    [type='number'] {
-        padding: 0;
-        border: 0;
-        background: 0;
-        width: 50px;
-        font-size: inherit;
-        font-family: inherit;
-        text-align: right;
-        border-bottom: 1px solid black;
-    }
-
     [type='color'] {
         padding: 0;
         border: 0;
@@ -149,7 +134,6 @@ div {
             border-radius: 4px;
         }
     }
-
 }
 
 .spacer {
@@ -157,34 +141,18 @@ div {
 }
 
 .models {
-    margin: 0 0 0 ($settingsWidth + 10);
-    padding: 20px 15px 300px 15px;
+    margin: 0;
+    margin-left: $settingsWidth;
     overflow: auto;
-    min-height: calc(100vh - 20px);
-
-    &.horizontal {
-        display: flex;
-        align-items: flex-start;
-
-        .model {
-            margin-right: 60px;
-            flex-direction: column;
-            flex: 1;
-            min-width: 500px;
-            max-width: 800px;
-
-            .model-tools {
-                margin-bottom: 20px;
-            }
-        }
-    }
+    min-height: 100vh;
 }
-
 
 .model {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 60px;
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
 
     h1 {
         margin-top: 0;
@@ -228,11 +196,14 @@ div {
             text-align: inherit;
         }
 
+        & > *:not(:last-child) {
+            margin-bottom: 0.5em;
+        }
+
         .title {
             font-size: 2em;
             line-height: 1em;
-            height: 1em;
-            margin-bottom: 0.5em;
+            height: 2em;
         }
 
         .body {
@@ -246,8 +217,8 @@ div {
     $line-multplier: 2em;
 
     .title {
+        width: 100%;
         font-size: inherit !important;
-        margin-bottom: 0 !important;
         min-height: $line-multplier;
         line-height: $line-multplier;
         height: $line-multplier;
@@ -266,10 +237,88 @@ div {
     }
 }
 
-.selected {
-    color: #00b000
+.horizontal-layout {
+    display: flex;
+    align-items: flex-start;
+
+    &.mode-logo .model-body {
+        text-align: center !important;
+    }
+
+    .model {
+        flex-direction: column;
+        flex: 1;
+        min-width: 500px;
+        max-width: 800px;
+
+        .model-tools {
+            margin-bottom: 20px;
+        }
+    }
 }
 
-.warn {
-    color: #e10101;
+.expanded {
+    .model {
+        $width: calc(100vw - $settingsWidth);
+        flex-shrink: 0 !important;
+        flex-basis: $width !important;
+        width: $width !important;
+        height: calc(100vh) !important;
+        max-width: none !important;
+        max-height: none !important
+    }
+}
+
+.expanded.horizontal-layout {
+    .model {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    position: fixed;
+    padding: 0;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+
+    i {
+        position: relative;
+        left: -1px;
+        font-size: 22px;
+    }
+}
+
+.cdk-drag-preview {
+
+    backdrop-filter: blur(10px);
+    background: transparent;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
+
+    .body, .title {
+        opacity: 0
+    }
+}
+
+.cdk-drag-placeholder {
+    * {
+        opacity: 0;
+    }
+
+    border: 2px dashed rgba(123, 123, 123, 0.5);
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-animating {
+    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }

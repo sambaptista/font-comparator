@@ -1,58 +1,29 @@
-<!-- Global tools
+<div class="scroll-watcher"></div>
 
-font-style: italic
-text-transform: none, uppercase, lowercase, capitalize
-smallcaps
-(align)
--->
-
-
-<div class="global-settings">
+<form class="global-settings">
 
     <div class="horizontal gap">
         <button class="button icon-button" *ngIf="!globalSettings.horizontal" (click)="toggleLayout()"><i class="fa-solid fa-grip"></i></button>
         <button class="button icon-button" *ngIf="globalSettings.horizontal" (click)="toggleLayout()"><i class="fa-solid fa-grip-vertical"></i></button>
-        <button class="button" *ngIf="!globalSettings.logo" (click)="toggleLogoMode()">Logo mode</button>
-        <button class="button" *ngIf="globalSettings.logo" (click)="toggleLogoMode()">Text mode</button>
+        <button class="button icon-button" *ngIf="globalSettings.expanded" (click)="toggleExpanded()"><i class="fa-solid fa-compress"></i></button>
+        <button class="button icon-button" *ngIf="!globalSettings.expanded" (click)="toggleExpanded()"><i class="fa-solid fa-expand"></i></button>
+        <button class="button" *ngIf="!globalSettings.logo" (click)="toggleLogoMode()">Title</button>
+        <button class="button" *ngIf="globalSettings.logo" (click)="toggleLogoMode()">Text</button>
     </div>
     <br />
 
     <div class="horizontal setting">
         <label><strong>Colors</strong>&nbsp;</label>
-        <input type="color" name="colorPicker" [(ngModel)]="globalSettings.textColor" (change)="persist();">
+        <input type="color" name="colorPicker" [(ngModel)]="globalSettings.textColor" (change)="persist();" [ngModelOptions]="{standalone: true}">
         <button class="icon-button swap-colors-button" (click)="swapColors()"><i class="fa-solid fa-rotate"></i></button>
-        <input type="color" name="bgPicker" [(ngModel)]="globalSettings.bgColor" (change)="persist();">
+        <input type="color" name="bgPicker" [(ngModel)]="globalSettings.bgColor" (change)="persist();" [ngModelOptions]="{standalone: true}">
     </div>
 
-    <div class="setting">
-        <label for="fontSize">Size</label>
-        <input type="number" name="fontSize" min="10" step="1" [(ngModel)]="globalSettings.fontSize" (ngModelChange)="autoresize();" (change)="autoresize();">
-    </div>
-
-    <div class="setting">
-        <label for="lineHeight">Line</label>
-        <input type="number" min="0" step="0.05" name="lineHeight" [(ngModel)]="globalSettings.lineHeight" (ngModelChange)="autoresize();" (change)="autoresize();">
-    </div>
-
-    <div class="setting">
-        <label for="fontWeight">Weight</label>
-        <input type="number" min="0" max="900" step="100" name="fontWeight" [(ngModel)]="globalSettings.fontWeight" (ngModelChange)="autoresize();" (change)="autoresize();">
-    </div>
-
-    <div class="setting">
-        <label for="wordSpacing">Word spacing</label>
-        <input type="number" min="0" step="0.01" name="wordSpacing" [(ngModel)]="globalSettings.wordSpacing" (ngModelChange)="autoresize();" (change)="autoresize();">
-    </div>
-
-    <div class="setting">
-        <label for="letterSpacing">Letter spacing</label>
-        <input type="number" min="0" step="0.01" name="letterSpacing" [(ngModel)]="globalSettings.letterSpacing" (ngModelChange)="autoresize();" (change)="autoresize();">
-    </div>
-
+    <app-font-settings [model]="globalSettings" (change)="autoresize()" (reset)="resetGlobalFontSettings()"></app-font-settings>
 
     <div class="horizontal gap">
         <label class="checkbox">
-            <input type="checkbox" [value]="1" [(ngModel)]="globalSettings.italic" (ngModelChange)="persist()">
+            <input type="checkbox" [value]="1" [(ngModel)]="globalSettings.italic" (ngModelChange)="persist()" [ngModelOptions]="{standalone: true}">
             <span class="icon-button"><i class="fa-solid fa-italic"></i></span>
         </label>
 
@@ -60,17 +31,19 @@ smallcaps
         <button *ngIf="globalSettings.fontVariant === 'normal'" (click)="globalSettings.fontVariant = 'small-caps'; persist()" class="icon-button"><i class="fa-solid fa-a"></i></button>
         <button *ngIf="globalSettings.fontVariant === 'small-caps'" (click)="globalSettings.fontVariant = 'all-small-caps'; persist()" class="icon-button active"><i class="fa-solid fa-a "></i></button>
 
-        <button *ngIf="globalSettings.align === 'left'" (click)="globalSettings.align = 'center'; persist()" class="icon-button"><i class="fa-solid fa-align-left"></i></button>
-        <button *ngIf="globalSettings.align === 'center'" (click)="globalSettings.align = 'right'; persist()" class="icon-button active"><i class="fa-solid fa-align-center"></i></button>
-        <button *ngIf="globalSettings.align === 'right'" (click)="globalSettings.align = 'justify'; persist()" class="icon-button active"><i class="fa-solid fa-align-right"></i></button>
-        <button *ngIf="globalSettings.align === 'justify'" (click)="globalSettings.align = 'left'; persist()" class="icon-button active"><i class="fa-solid fa-align-justify"></i></button>
+        @if(!globalSettings.logo) {
+            <button *ngIf="globalSettings.align === 'left'" (click)="globalSettings.align = 'center'; persist()" class="icon-button"><i class="fa-solid fa-align-left"></i></button>
+            <button *ngIf="globalSettings.align === 'center'" (click)="globalSettings.align = 'right'; persist()" class="icon-button active"><i class="fa-solid fa-align-center"></i></button>
+            <button *ngIf="globalSettings.align === 'right'" (click)="globalSettings.align = 'justify'; persist()" class="icon-button active"><i class="fa-solid fa-align-right"></i></button>
+            <button *ngIf="globalSettings.align === 'justify'" (click)="globalSettings.align = 'left'; persist()" class="icon-button active"><i class="fa-solid fa-align-justify"></i></button>
+        }
     </div>
 
     <br />
     <div class="inline-listing">
         @for (category of categories; track category) {
             <label class="category checkbox">
-                <input type="checkbox" [value]="category" [(ngModel)]="selectedCategories[category]" (change)="filterFonts()">
+                <input type="checkbox" [value]="category" [(ngModel)]="selectedCategories[category]" [ngModelOptions]="{standalone: true}" (change)="filterFonts()">
                 <span class="button">{{ category }}</span>
             </label>
         }
@@ -79,7 +52,7 @@ smallcaps
     <br />
     <div class="horizontal">
         <label class="checkbox" style="margin-bottom:4px;">
-            <input type="checkbox" [value]="1" [(ngModel)]="globalSettings.allVariants" (change)="filterFonts()">
+            <input type="checkbox" [value]="1" [(ngModel)]="globalSettings.allVariants" (change)="filterFonts()" [ngModelOptions]="{standalone: true}">
             <span class="icon-button" *ngIf="!globalSettings.allVariants">Or :</span>
             <span class="icon-button" *ngIf="globalSettings.allVariants">And :</span>
         </label>
@@ -90,24 +63,28 @@ smallcaps
     <div class="inline-listing">
         @for (variant of variants; track variant) {
             <label class="variant checkbox">
-                <input type="checkbox" [value]="variant" [(ngModel)]="selectedVariants[variant]" (change)="filterFonts()">
+                <input type="checkbox" [value]="variant" [(ngModel)]="selectedVariants[variant]" (change)="filterFonts()" [ngModelOptions]="{standalone: true}">
                 <span class="button">{{ variant }}</span>
             </label>
         }
     </div>
 
-</div>
+</form>
 
 <div
+    #modelsWrapper
     class="models"
     [style.background]="globalSettings.bgColor"
     [style.color]="globalSettings.textColor"
-    [class.horizontal]="globalSettings.horizontal"
+    [class.horizontal-layout]="globalSettings.horizontal"
+    [class.expanded]="globalSettings.expanded"
     [class.mode-logo]="globalSettings.logo"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
 >
 
     @for (model of models; track model; let i = $index) {
-        <div class="model" [style.fontSize.px]="globalSettings.fontSize">
+        <form cdkDrag #modelElement class="model" [style.fontSize.px]="getFontSetting(model, 'fontSize')">
 
             <div class="model-tools">
 
@@ -119,40 +96,50 @@ smallcaps
                 >
                 </app-font-select>
 
-                <div class="model-sub-tools gap horizontal">
-                    <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-add"></i></button>
-                    <button class="button warn" (click)="remove(i)"><i class="fa-solid fa-trash"></i></button>
-                    <div class="spacer"></div>
-                    {{ model.bodyFont?.variants?.length }} variants
+                <div class="model-sub-tools gap">
+                    <div class="gap horizontal">
+                        <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
+                        <button class="button warn" (click)="remove(i)"><i class="fa-solid fa-trash"></i></button>
+                        <button class="button" cdkDragHandle><i class="fa-solid fa-up-down-left-right"></i></button>
+                        <div class="spacer"></div>
+                        @if (model.bodyFont?.variants?.length) {
+                            {{ model.bodyFont?.variants?.length }} variants
+                        }</div>
+
+                    <app-font-settings [model]="model" (selectionChange)="autoresize()" (reset)="resetFontSettings(model)"></app-font-settings>
                 </div>
             </div>
 
             <div
                 class="model-body"
-                [style.textAlign]="globalSettings.align"
-                [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
-                [style.lineHeight.em]="globalSettings.lineHeight"
-                [style.fontWeight]="globalSettings.fontWeight"
-                [style.wordSpacing.em]="globalSettings.wordSpacing"
-                [style.letterSpacing.em]="globalSettings.letterSpacing"
                 [style.fontFamily]="model.bodyFont?.family"
                 [style.fontVariant]="globalSettings.fontVariant"
-
+                [style.textAlign]="globalSettings.align"
+                [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
+                [style.lineHeight.em]="getFontSetting(model, 'lineHeight')"
+                [style.fontWeight]="getFontSetting(model,'fontWeight')"
+                [style.wordSpacing.em]="getFontSetting(model,'wordSpacing')"
+                [style.letterSpacing.em]="getFontSetting(model,'letterSpacing')"
             >
-                <input class="title" [(ngModel)]="titleText" (change)="autoresize();" />
-                <textarea
-                    *ngIf="!globalSettings.logo"
-                    class="body"
-                    cdkTextareaAutosize
-                    #autosize="cdkTextareaAutosize"
-                    [(ngModel)]="bodyText"
-                    (change)="autoresize();"
-                ></textarea>
-
+                @if(model.bodyFont) {
+                    <input class="title" [(ngModel)]="titleText" (change)="autoresize();" [ngModelOptions]="{standalone: true}" />
+                    <textarea
+                        *ngIf="!globalSettings.logo"
+                        class="body"
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        [(ngModel)]="bodyText"
+                        (change)="autoresize();"
+                        [ngModelOptions]="{standalone: true}"
+                    ></textarea>
+                }
             </div>
-        </div>
+        </form>
     }
-
 </div>
+
+<button (click)="addModel()" class="icon-button fab"
+        [style.background]="globalSettings.textColor"
+        [style.color]="globalSettings.bgColor"><i class="fa-solid fa-add"></i></button>
 
 <router-outlet></router-outlet>

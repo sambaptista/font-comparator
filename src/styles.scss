@@ -8,8 +8,14 @@ html, body {
     font-style: normal;
     font-size: 14px;
     line-height: 1.7em;
+
+    * {
+        //background: rgba(255, 0, 0, 0.15) !important;
+        //box-shadow: 2px 2px 5px rgba(0,0,0, 0.2);
+    }
+
 }
 
 *:focus {
-    outline: 1px solid rgb(0, 163, 255);
+    outline: 1px solid rgb(0, 163, 255) ;
 }

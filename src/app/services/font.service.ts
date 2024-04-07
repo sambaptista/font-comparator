@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as fonts from '../../assets/fonts.json';
 import {intersection} from 'lodash-es';
+import {first, fromEvent, map, Observable, of, take} from 'rxjs';
 
 export type Font = {
     family: string;
@@ -54,9 +55,22 @@ export class FontsService {
         return all ? common.length === selected.length : common.length > 0;
     }
 
-    public loadFont(font: Font): void {
+    // public loadFont(font: Font): void {
+    //     if (this.loadedFonts[font.family]) {
+    //         return;
+    //     }
+    //
+    //     this.loadedFonts[font.family] = true;
+    //
+    //     const linkElement = document.createElement('link');
+    //     linkElement.rel = 'stylesheet';
+    //     linkElement.href = this.generateGoogleFontsURL(font);
+    //     document.head.appendChild(linkElement);
+    // }
+
+    public loadFont(font: Font): Observable<void> {
         if (this.loadedFonts[font.family]) {
-            return;
+            return of(undefined);
         }
 
         this.loadedFonts[font.family] = true;
@@ -65,6 +79,8 @@ export class FontsService {
         linkElement.rel = 'stylesheet';
         linkElement.href = this.generateGoogleFontsURL(font);
         document.head.appendChild(linkElement);
+
+        return fromEvent(linkElement, 'load').pipe(map(() => undefined), first());
     }
 
     public generateGoogleFontsURL(font: Font): string {

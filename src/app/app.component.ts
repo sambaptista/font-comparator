@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, NgZone, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
@@ -7,10 +7,24 @@ import {FontSelectComponent, FontSelection} from './font-select/font-select.comp
 import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
 import * as categories from '../assets/categories.json';
 import * as fonts from '../assets/fonts.json';
-import {Subject, takeUntil} from 'rxjs';
+import {delay, first, Subject, takeUntil} from 'rxjs';
+import {FontSettings, FontSettingsComponent} from './font-settings/font-settings.component';
+import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
 
-type Model = {
+type Model = FontSettings & {
     bodyFont: Font | null;
+}
+
+type Settings = FontSettings & {
+    bgColor: string;
+    textColor: string;
+    italic: boolean;
+    fontVariant: string;
+    align: string;
+    allVariants: boolean;
+    horizontal: boolean;
+    logo: boolean;
+    expanded: boolean;
 }
 
 @Component({
@@ -21,30 +35,40 @@ type Model = {
     imports: [
         RouterModule,
         CommonModule,
-        FormsModule,
         FontSelectComponent,
+        FormsModule,
         TextFieldModule,
+        FontSettingsComponent,
+        DragDropModule,
     ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
     @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;
+    @ViewChildren('modelElement') modelElements!: QueryList<ElementRef<HTMLElement>>;
+    @ViewChild('modelsWrapper', {static: true}) modelsWrapper!: ElementRef<HTMLElement>;
 
-    public globalSettings = {
+    private readonly defaultFontSettings = {
         fontSize: 22,
         lineHeight: 1.7,
-        fontWeight: 400,
-        bgColor: '#ffffff',
-        textColor: '#000000',
         wordSpacing: 0,
         letterSpacing: 0,
+        fontWeight: 400,
+    };
+
+    private readonly defaultModel: Model = {bodyFont: null};
+
+    public globalSettings: Settings = Object.assign({
+        bgColor: '#ffffff',
+        textColor: '#000000',
         italic: false,
         fontVariant: 'normal',
         align: 'left',
         allVariants: false,
         horizontal: false,
-        logo: false
-    };
+        logo: false,
+        expanded: false,
+    }, this.defaultFontSettings);
 
     /**
      * Variants
@@ -62,6 +86,7 @@ export class AppComponent implements OnInit {
         '900',
     ];
 
+
     public selectedVariants: {[key: string]: boolean} = {'regular': true};
 
     /**
@@ -69,25 +94,85 @@ export class AppComponent implements OnInit {
      */
     public categories: string[] = (categories as any).default;
     public selectedCategories: {[key: string]: boolean} = {};
-
-    public models: Model[] = [
-        {bodyFont: null},
-    ];
-
-    public titleText = 'Mon super titre';
-    public bodyText = 'Par défaut, la balise dans HTML ne génère un événement que lorsque la sélection change, c\'est-à-dire lorsque l\'utilisateur clique pour sélectionner une option. Il n\'y a pas d\'événement intégré pour un changement de focus sur une option individuelle dans une liste déroulante.';
-
+    public models: Model[] = [this.defaultModel];
+    public titleText = 'Culture of typography';
+    public bodyText = 'Typography is more than mere text formatting. It\'s the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.';
     public fonts: Font[] = (fonts as any).default;
+    private firstInteraction = new Subject<void>();
 
-    public constructor(public fontService: FontsService, private route: ActivatedRoute, private router: Router) {
+    public constructor(
+        public fontService: FontsService,
+        private route: ActivatedRoute,
+        private router: Router,
+    ) {
     }
 
     public ngOnInit(): void {
         this.categories.push('slab');
         this.initSettings();
+        this.handleEvents();
     }
 
-    private firstInteraction = new Subject<void>();
+    public ngAfterViewInit(): void {
+        this.autosizes.changes.pipe(first(), delay(150)).subscribe(() => this.autoresize());
+    }
+
+    public handleEvents(): void {
+        document.addEventListener('keydown', event => {
+
+            if (document.activeElement !== document.body && document.activeElement !== document.documentElement) {
+                return;
+            }
+
+            let delta = 0;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'ArrowLeft':
+                    delta = -1;
+                    event.preventDefault();
+                    break;
+                case 'ArrowDown':
+                case 'ArrowRight':
+                    delta = 1;
+                    event.preventDefault();
+                    break;
+            }
+
+            if (event.key === ' ') {
+                delta = event.shiftKey ? -1 : 1;
+                event.preventDefault();
+            }
+
+            if (!delta) {
+                return;
+            }
+
+            const isHorizontal = this.globalSettings.horizontal;
+            const element = this.getNextModelElement(isHorizontal ? 'left' : 'top', isHorizontal ? 200 : 0, delta < 0);
+
+            if (!element) {
+                return;
+            }
+
+            element.scrollIntoView({behavior: 'instant', block: 'start', inline: 'start'});
+        });
+    }
+
+    private getNextModelElement(attribute: 'top' | 'left', offset: number, reverse: boolean = false): HTMLElement | null {
+
+        let items = this.modelElements.toArray();
+        items = reverse ? items.reverse() : items;
+        const result = items.find((element: ElementRef) => {
+            if (reverse) {
+                return element.nativeElement.getBoundingClientRect()[attribute] < offset;
+            } else {
+                return element.nativeElement.getBoundingClientRect()[attribute] > offset;
+            }
+        });
+
+        return result?.nativeElement || null;
+    }
 
     public initSettings(): void {
         this.route.queryParams.pipe(takeUntil(this.firstInteraction)).subscribe(params => {
@@ -110,6 +195,7 @@ export class AppComponent implements OnInit {
                 }
 
                 this.filterFonts(false);
+                this.autoresize(false);
             }
         });
     }
@@ -137,18 +223,20 @@ export class AppComponent implements OnInit {
     }
 
     public useFont(font: FontSelection): void {
-        this.fontService.loadFont(font.selected);
+        this.fontService.loadFont(font.selected).subscribe(() => this.autoresize());
         this.fontService.loadFont(font.next);
-        setTimeout(() => this.autoresize(), 100);
     }
 
-    public autoresize() {
+    public autoresize(persist: boolean = true) {
+
         this.autosizes.toArray().forEach(autosize => {
-            // autosize.reset();
+            autosize.reset();
             autosize.resizeToFitContent(true);
         });
 
-        this.persist();
+        if (persist) {
+            this.persist();
+        }
     }
 
     private filterTrueValues(obj: {[key: string]: boolean}): string[] {
@@ -162,7 +250,7 @@ export class AppComponent implements OnInit {
     }
 
     public duplicate(model: Model): void {
-        this.models.push(Object.assign({}, model));
+        this.addModel(model);
         this.persist();
     }
 
@@ -181,12 +269,17 @@ export class AppComponent implements OnInit {
 
     public addModelIfEmpty(): void {
         if (!this.models.length) {
-            this.models.push({bodyFont: null});
+            this.models.push(this.defaultModel);
         }
     }
 
     public toggleLayout(): void {
         this.globalSettings.horizontal = !this.globalSettings.horizontal;
+        setTimeout(() => this.autoresize(), 100);
+    }
+
+    public toggleExpanded(): void {
+        this.globalSettings.expanded = !this.globalSettings.expanded;
         setTimeout(() => this.autoresize(), 100);
     }
 
@@ -196,4 +289,33 @@ export class AppComponent implements OnInit {
         setTimeout(() => this.autoresize(), 100);
     }
 
+    public getFontSetting(model: Model, name: keyof FontSettings): number | null {
+        return model[name] || this.globalSettings[name] || null;
+    }
+
+    public resetFontSettings(model: Model): void {
+        delete model.wordSpacing;
+        delete model.fontSize;
+        delete model.fontWeight;
+        delete model.letterSpacing;
+        delete model.lineHeight;
+        this.autoresize();
+    }
+
+    public resetGlobalFontSettings(): void {
+        this.globalSettings = Object.assign(this.globalSettings, this.defaultFontSettings);
+        this.autoresize();
+    }
+
+    public addModel(model: Model = this.defaultModel): void {
+        this.models.push(Object.assign({}, model));
+        setTimeout(() => {
+            this.modelElements.last.nativeElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
+        }, 20);
+    }
+
+    public drop(event: CdkDragDrop<Model[]>) {
+        moveItemInArray(this.models, event.previousIndex, event.currentIndex);
+        this.persist();
+    }
 }

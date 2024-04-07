@@ -57,11 +57,13 @@ export class FontSelectComponent implements OnInit {
                 case 'ArrowLeft':
                     this.selectPrevious();
                     event.preventDefault();
+                    event.stopPropagation();
                     break;
                 case 'ArrowDown':
                 case 'ArrowRight':
                     this.selectNext();
                     event.preventDefault();
+                    event.stopPropagation();
                     break;
             }
         });

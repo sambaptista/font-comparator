@@ -1,0 +1,54 @@
+<div class="setting">
+    <label for="fontSize" class="icon">
+        <svg fill="currentColor" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <path d="M920 416H616c-4.4 0-8 3.6-8 8v112c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-56h60v320h-46c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h164c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8h-46V480h60v56c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V424c0-4.4-3.6-8-8-8zM656 296V168c0-4.4-3.6-8-8-8H104c-4.4 0-8 3.6-8 8v128c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-64h168v560h-92c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-92V232h168v64c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8z" />
+        </svg>
+    </label>
+    <input type="number" id="fontSize" min="10" step="1" [(ngModel)]="model.fontSize" (ngModelChange)="change();" (change)="change();">
+</div>
+
+<div class="setting">
+    <label for="lineHeight" class="icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 13H15M7 17L11.2717 7.60224C11.5031 7.09323 11.6188 6.83872 11.7791 6.75976C11.9184 6.69115 12.0816 6.69115 12.2209 6.75976C12.3812 6.83872 12.4969 7.09323 12.7283 7.60224L17 17M21 21H3M21 3H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+    </label>
+    <input type="number" min="0" step="0.05" id="lineHeight" [(ngModel)]="model.lineHeight" (ngModelChange)="change();" (change)="change();">
+</div>
+
+<div class="setting">
+    <label for="fontWeight" class="icon">
+        <svg class="bold" fill="currentColor" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0v1c.55 0 1 .45 1 1v4c0 .55-.45 1-1 1v1h5.5c1.38 0 2.5-1.12 2.5-2.5 0-1-.59-1.85-1.44-2.25.27-.34.44-.78.44-1.25 0-1.1-.89-2-2-2h-5zm3 1h1c.55 0 1 .45 1 1s-.45 1-1 1h-1v-2zm0 3h1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-1.5v-3z" />
+        </svg>
+    </label>
+    <input type="number" min="0" max="900" step="100" id="fontWeight" [(ngModel)]="model.fontWeight" (ngModelChange)="change();" (change)="change();">
+</div>
+
+<div class="setting">
+    <label for="letterSpacing" class="icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 13L15 13M7 17L11.2717 7.60225C11.5031 7.09323 11.6188 6.83872 11.7791 6.75976C11.9184 6.69115 12.0816 6.69115 12.2209 6.75976C12.3812 6.83872 12.4969 7.09323 12.7283 7.60225L17 17M21 3V21M3 3L3 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+    </label>
+    <input type="number" step="0.01" id="letterSpacing" [(ngModel)]="model.letterSpacing" (ngModelChange)="change();" (change)="change();">
+</div>
+
+<div class="setting">
+    <label for="wordSpacing" class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M-1,430.93H183.05V258.78H-1v30H153.05V400.93H-1Z" /><path d="M500.6,430.94H328.44V258.78H500.6Zm-142.16-30H470.6V288.78H358.44Z" /><path d="M379.57,57.88a3.55,3.55,0,0,0-5,.2L361.46,72.16a3.57,3.57,0,0,0,.18,5l0,0,45.42,41.23H90.47l45.46-41.23a3.56,3.56,0,0,0,.25-5l0,0L123,58.08a3.55,3.55,0,0,0-5-.2L40.31,128.79a3.56,3.56,0,0,0-.23,5c.07.08.15.15.23.23l78.12,71.34a3.57,3.57,0,0,0,5-.2l13.11-14.09a3.56,3.56,0,0,0-.18-5l0,0L90.92,144.81H407.53L362.07,186a3.54,3.54,0,0,0-.25,5l0,0L375,205.19a3.57,3.57,0,0,0,5,.2l77.71-70.91a3.56,3.56,0,0,0,.23-5,2.5,2.5,0,0,0-.23-.23Z" /></svg>
+    </label>
+    <input type="number" step="0.01" id="wordSpacing" [(ngModel)]="model.wordSpacing" (ngModelChange)="change();" (change)="change();">
+</div>
+
+
+
+<div class="setting">
+    <label for="wordSpacing" class="icon" (click)="reset.emit()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.20711 2.54289C7.59763 2.93342 7.59763 3.56658 7.20711 3.95711L5.41421 5.75H13.25C17.6683 5.75 21.25 9.33172 21.25 13.75C21.25 18.1683 17.6683 21.75 13.25 21.75C8.83172 21.75 5.25 18.1683 5.25 13.75C5.25 13.1977 5.69772 12.75 6.25 12.75C6.80228 12.75 7.25 13.1977 7.25 13.75C7.25 17.0637 9.93629 19.75 13.25 19.75C16.5637 19.75 19.25 17.0637 19.25 13.75C19.25 10.4363 16.5637 7.75 13.25 7.75H5.41421L7.20711 9.54289C7.59763 9.93342 7.59763 10.5666 7.20711 10.9571C6.81658 11.3476 6.18342 11.3476 5.79289 10.9571L2.29289 7.45711C1.90237 7.06658 1.90237 6.43342 2.29289 6.04289L5.79289 2.54289C6.18342 2.15237 6.81658 2.15237 7.20711 2.54289Z" fill="#212121"/>
+        </svg>
+    </label>
+</div>
