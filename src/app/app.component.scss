@@ -1,4 +1,5 @@
-$settingsWidth: 200px;
+$settingsWidth: 230px;
+$gutter: 15px;
 
 .selected {
     color: #00b000
@@ -74,15 +75,20 @@ $settingsWidth: 200px;
 .global-settings {
     overflow: auto;
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    background: white;
+    top: $gutter;
+    left: $gutter;
+    bottom: $gutter;
     color: black;
-    padding: 10px 10px 10px 5px;
-    width: $settingsWidth - 20px;
+    width: $settingsWidth - $gutter;
     display: flex;
     flex-direction: column;
+    gap: $gutter;
+
+    .setting-group {
+        background: white;
+        padding: $gutter;
+        border-radius: 8px;
+    }
 
     & > .setting {
         display: flex;
@@ -142,7 +148,7 @@ $settingsWidth: 200px;
 
 .models {
     margin: 0;
-    margin-left: $settingsWidth;
+    padding-left: $settingsWidth;
     overflow: auto;
     min-height: 100vh;
 }
@@ -150,7 +156,7 @@ $settingsWidth: 200px;
 .model {
     display: flex;
     align-items: flex-start;
-    padding: 20px;
+    padding: $gutter;
     border-radius: 10px;
     box-sizing: border-box;
 
@@ -164,7 +170,7 @@ $settingsWidth: 200px;
         color: black;
         width: 260px;
         margin-right: 20px;
-        padding: 4px;
+        padding: $gutter;
         border-radius: 4px;
         font-size: 16px;
     }
