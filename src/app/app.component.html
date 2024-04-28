@@ -98,6 +98,11 @@
                     <div class="gap horizontal">
                         <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
                         <button class="button warn" (click)="remove(i)"><i class="fa-solid fa-trash"></i></button>
+
+                        @if (model && model.bodyFont) {
+                            <a class="button" [attr.href]="'https://fonts.google.com/specimen/' + model.bodyFont.family" target="_blank"><i class="fa-solid fa-link"></i></a>
+                        }
+
                         <button class="button" cdkDragHandle><i class="fa-solid fa-up-down-left-right"></i></button>
                         <div class="spacer"></div>
                         @if (model.bodyFont?.variants?.length) {
@@ -108,18 +113,18 @@
                     <app-font-settings [model]="model" (selectionChange)="autoresize()" (reset)="resetFontSettings(model)"></app-font-settings>
                 </div>
 
-                <div
-                    class="model-body"
-                    [style.fontFamily]="model.bodyFont?.family"
-                    [style.fontVariant]="globalSettings.fontVariant"
-                    [style.textAlign]="globalSettings.align"
-                    [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
-                    [style.lineHeight.em]="getFontSetting(model, 'lineHeight')"
-                    [style.fontWeight]="getFontSetting(model,'fontWeight')"
-                    [style.wordSpacing.em]="getFontSetting(model,'wordSpacing')"
-                    [style.letterSpacing.em]="getFontSetting(model,'letterSpacing')"
-                >
-                    @if (model.bodyFont) {
+                @if (model.bodyFont) {
+                    <div
+                        class="model-body"
+                        [style.fontFamily]="model.bodyFont.family"
+                        [style.fontVariant]="globalSettings.fontVariant"
+                        [style.textAlign]="globalSettings.align"
+                        [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
+                        [style.lineHeight.em]="getFontSetting(model, 'lineHeight')"
+                        [style.fontWeight]="getFontSetting(model,'fontWeight')"
+                        [style.wordSpacing.em]="getFontSetting(model,'wordSpacing')"
+                        [style.letterSpacing.em]="getFontSetting(model,'letterSpacing')"
+                    >
                         <input class="title" [(ngModel)]="titleText" (change)="autoresize();" [ngModelOptions]="{standalone: true}" />
                         <textarea
                             *ngIf="!globalSettings.logo"
@@ -130,8 +135,9 @@
                             (change)="autoresize();"
                             [ngModelOptions]="{standalone: true}"
                         ></textarea>
-                    }
-                </div>
+
+                    </div>
+                }
             </form>
         }
     </div>
