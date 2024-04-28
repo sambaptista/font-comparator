@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgZone, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
@@ -10,6 +10,7 @@ import * as fonts from '../assets/fonts.json';
 import {delay, first, Subject, takeUntil} from 'rxjs';
 import {FontSettings, FontSettingsComponent} from './font-settings/font-settings.component';
 import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
+import {hex} from 'wcag-contrast';
 
 type Model = FontSettings & {
     bodyFont: Font | null;
@@ -86,7 +87,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         '900',
     ];
 
-
     public selectedVariants: {[key: string]: boolean} = {'regular': true};
 
     /**
@@ -99,6 +99,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     public bodyText = 'Typography is more than mere text formatting. It\'s the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.';
     public fonts: Font[] = (fonts as any).default;
     private firstInteraction = new Subject<void>();
+
+    public readonly contrastSmallTextAAA = 7.1;
+    public readonly contrastSmallTextAA = 4.5;
+    public readonly contrastBigTextAAA = 4.5;
+    public readonly contrastBigTextAA = 3;
 
     public constructor(
         public fontService: FontsService,
@@ -157,6 +162,44 @@ export class AppComponent implements OnInit, AfterViewInit {
 
             element.scrollIntoView({behavior: 'instant', block: 'start', inline: 'start'});
         });
+    }
+
+    /**
+     * Returns array with two thresholds. First index is AAA, second is AA
+     */
+    public getContrastThresholds(): [number, number] {
+        if (this.globalSettings.logo) {
+            return [this.contrastBigTextAAA, this.contrastBigTextAA];
+        } else {
+            return [this.contrastSmallTextAAA, this.contrastSmallTextAA];
+        }
+    }
+
+    public matchContrast(threshold: 'AAA' | 'AA', textColor?: string): boolean {
+        const thresholds = this.getContrastThresholds();
+        let target = threshold === 'AAA' ? thresholds[0]: thresholds[1];
+        return hex(this.globalSettings.bgColor, textColor || this.globalSettings.textColor) > target;
+    }
+
+    /**
+     *
+     *    FIX      AA     FIX MANUALLY    AAA    DOESN'T FIX
+     *    ERROR <- 4.5     <- WARN ->     7.1 -> CONTRAST OK
+     * |------------|----------------------|--------------------------------|
+     */
+    public fixContrast(autofixThreshold: 'AAA' | 'AA' = 'AAA'): void {
+        if (!this.matchContrast(autofixThreshold)) {
+            const thresholds = this.getContrastThresholds();
+            const white = hex(this.globalSettings.bgColor, '#ffffff');
+            const black = hex(this.globalSettings.bgColor, '#000000');
+            if (white > thresholds[1]) {
+                this.globalSettings.textColor = '#ffffff';
+                this.persist();
+            } else if (black > thresholds[1]) {
+                this.globalSettings.textColor = '#000000';
+                this.persist();
+            }
+        }
     }
 
     private getNextModelElement(attribute: 'top' | 'left', offset: number, reverse: boolean = false): HTMLElement | null {
@@ -265,6 +308,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         const tempColor = this.globalSettings.textColor;
         this.globalSettings.textColor = this.globalSettings.bgColor;
         this.globalSettings.bgColor = tempColor;
+        this.fixContrast('AA');
         this.persist();
     }
 

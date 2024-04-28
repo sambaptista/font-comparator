@@ -73,7 +73,6 @@ $box-padding: 20px;
 .setting-group,
 .model-tools {
     background: white;
-    //background: rgba(255, 255, 255, 0.1);
     color: black;
     padding: $box-padding;
     border-radius: 8px;
@@ -103,6 +102,21 @@ $box-padding: 20px;
 
     .swap-colors-button {
         background-color: transparent;
+    }
+
+    .contrast-button {
+        display: none;
+        margin-left: 10px;
+
+        &.alert {
+            display: block;
+            color: orange;
+        }
+
+        &.error {
+            display: block;
+            color: red;
+        }
     }
 
     .inline-listing {
@@ -269,8 +283,6 @@ $box-padding: 20px;
             overflow: hidden;
             outline: none;
             border-radius: 8px;
-            //position:relative;
-            //left:- $small-gutter;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.1)

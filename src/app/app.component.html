@@ -13,10 +13,10 @@
 
         <div class="setting-group">
             <div class="horizontal setting">
-                <label><strong>Colors</strong>&nbsp;</label>
                 <input type="color" name="colorPicker" [(ngModel)]="globalSettings.textColor" (change)="persist();" [ngModelOptions]="{standalone: true}">
                 <button class="icon-button swap-colors-button" (click)="swapColors()"><i class="fa-solid fa-rotate"></i></button>
-                <input type="color" name="bgPicker" [(ngModel)]="globalSettings.bgColor" (change)="persist();" [ngModelOptions]="{standalone: true}">
+                <input type="color" name="bgPicker" [(ngModel)]="globalSettings.bgColor" (change)="fixContrast('AA');persist();" [ngModelOptions]="{standalone: true}">
+                <button class="icon-button swap-colors-button contrast-button" [class.alert]="!matchContrast('AAA')" [class.error]="!matchContrast('AA')" (click)="fixContrast('AAA')"><i class="fa-solid fa-circle-half-stroke"></i></button>
             </div>
 
             <app-font-settings [model]="globalSettings" (change)="autoresize()" (reset)="resetGlobalFontSettings()"></app-font-settings>
