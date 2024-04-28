@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     @ViewChild('modelsWrapper', {static: true}) modelsWrapper!: ElementRef<HTMLElement>;
 
     private readonly defaultFontSettings = {
-        fontSize: 22,
+        fontSize: 23,
         lineHeight: 1.7,
         wordSpacing: 0,
         letterSpacing: 0,
@@ -149,7 +149,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
 
             const isHorizontal = this.globalSettings.horizontal;
-            const element = this.getNextModelElement(isHorizontal ? 'left' : 'top', isHorizontal ? 200 : 0, delta < 0);
+            const element = this.getNextModelElement(isHorizontal ? 'left' : 'top', isHorizontal ? 265 : 0, delta < 0);
 
             if (!element) {
                 return;
@@ -164,10 +164,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         let items = this.modelElements.toArray();
         items = reverse ? items.reverse() : items;
         const result = items.find((element: ElementRef) => {
+            const value = element.nativeElement.getBoundingClientRect()[attribute];
             if (reverse) {
-                return element.nativeElement.getBoundingClientRect()[attribute] < offset;
+                return value < offset - 5;
             } else {
-                return element.nativeElement.getBoundingClientRect()[attribute] > offset;
+                return value > offset + 5;
             }
         });
 

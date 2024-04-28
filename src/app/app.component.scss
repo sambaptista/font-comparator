@@ -1,5 +1,6 @@
-$settingsWidth: 230px;
-$gutter: 15px;
+$settingsWidth: 250px;
+$gutter: 24px;
+$box-padding: 20px;
 
 .selected {
     color: #00b000
@@ -9,18 +10,19 @@ $gutter: 15px;
     color: #e10101;
 }
 
-.gap:not(.horizontal) > *:not(:last-child) {
-    margin-bottom: 4px;
+.gap {
+    gap: 4px;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
 }
 
 .horizontal {
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    &.gap > *:not(:last-child) {
-        margin-right: 4px;
-    }
 }
 
 .wrap {
@@ -51,10 +53,6 @@ $gutter: 15px;
         font-size: 16px
     }
 
-    i:not(:last-child) {
-        margin-right: 8px;
-    }
-
     i.small {
         font-size: 10px
     }
@@ -71,24 +69,30 @@ $gutter: 15px;
     }
 }
 
+// Boxes
+.setting-group,
+.model-tools {
+    background: white;
+    //background: rgba(255, 255, 255, 0.1);
+    color: black;
+    padding: $box-padding;
+    border-radius: 8px;
+}
+
 
 .global-settings {
     overflow: auto;
     position: fixed;
-    top: $gutter;
+    top: 0;
     left: $gutter;
-    bottom: $gutter;
+    bottom: 0;
+    padding-top: $gutter;
+    padding-bottom: $gutter;
     color: black;
     width: $settingsWidth - $gutter;
     display: flex;
     flex-direction: column;
     gap: $gutter;
-
-    .setting-group {
-        background: white;
-        padding: $gutter;
-        border-radius: 8px;
-    }
 
     & > .setting {
         display: flex;
@@ -147,18 +151,78 @@ $gutter: 15px;
 }
 
 .models {
-    margin: 0;
-    padding-left: $settingsWidth;
+    margin: 0 0 0 $settingsWidth + calc($gutter / 2);
+    padding-bottom: 75vh; // to allow top alignement
     overflow: auto;
-    min-height: 100vh;
+    min-height: calc(100vh);
+    display: flex;
+    flex-direction: column;
+
+    &.horizontal-layout {
+        flex-direction: row;
+        align-items: flex-start;
+        padding-bottom: 0;
+        padding-right: 50vw;
+
+        .model {
+            flex-direction: column;
+
+            .body {
+                width: 70ch;
+            }
+
+            .model-tools {
+                margin-right: 0;
+                margin-bottom: $gutter;
+            }
+        }
+
+        &.mode-logo {
+            .model {
+                min-width: auto;
+            }
+
+            .model-body {
+                text-align: center !important;
+            }
+        }
+    }
+
+    &.expanded {
+        padding-bottom: 0;
+        padding-right: 0 !important;
+
+        .model {
+            flex-shrink: 0 !important;
+            height: calc(100vh) !important;
+            max-width: none !important;
+            max-height: none !important;
+            align-items: center;
+            margin-right: 0;
+        }
+    }
+
+    &.expanded.horizontal-layout {
+        .model {
+            $width: calc(100vw - $settingsWidth);
+            width: $width !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 0 !important;
+            height: calc(100vh) !important;
+        }
+    }
+
 }
 
 .model {
     display: flex;
     align-items: flex-start;
-    padding: $gutter;
     border-radius: 10px;
     box-sizing: border-box;
+    padding-top: $gutter;
+    margin-right: $gutter;
 
     h1 {
         margin-top: 0;
@@ -166,13 +230,11 @@ $gutter: 15px;
 
     .model-tools {
         flex-shrink: 0;
-        background: white;
-        color: black;
         width: 260px;
-        margin-right: 20px;
-        padding: $gutter;
-        border-radius: 4px;
+        margin-right: $gutter;
         font-size: 16px;
+        position: relative;
+        left: 10px
     }
 
     .model-sub-tools {
@@ -187,6 +249,10 @@ $gutter: 15px;
         flex-direction: column;
         flex: 1;
         width: 100%;
+        max-width: 70ch;
+        gap: 0.5em;
+
+        $small-gutter: calc($gutter / 2);
 
         .title, .body {
             border: none;
@@ -200,21 +266,30 @@ $gutter: 15px;
             font-style: inherit;
             font-variant: inherit;
             text-align: inherit;
-        }
+            overflow: hidden;
+            outline: none;
+            border-radius: 8px;
+            //position:relative;
+            //left:- $small-gutter;
 
-        & > *:not(:last-child) {
-            margin-bottom: 0.5em;
+            &:hover {
+                background: rgba(255, 255, 255, 0.1)
+            }
         }
 
         .title {
             font-size: 2em;
-            line-height: 1em;
+            line-height: 2em;
             height: 2em;
+            width: 100%;
+            padding: 0 $small-gutter;
         }
 
         .body {
             font-size: 1em;
             resize: none;
+            width: 100%;
+            padding: $small-gutter $small-gutter 0 $small-gutter;
         }
     }
 }
@@ -243,45 +318,6 @@ $gutter: 15px;
     }
 }
 
-.horizontal-layout {
-    display: flex;
-    align-items: flex-start;
-
-    &.mode-logo .model-body {
-        text-align: center !important;
-    }
-
-    .model {
-        flex-direction: column;
-        flex: 1;
-        min-width: 500px;
-        max-width: 800px;
-
-        .model-tools {
-            margin-bottom: 20px;
-        }
-    }
-}
-
-.expanded {
-    .model {
-        $width: calc(100vw - $settingsWidth);
-        flex-shrink: 0 !important;
-        flex-basis: $width !important;
-        width: $width !important;
-        height: calc(100vh) !important;
-        max-width: none !important;
-        max-height: none !important
-    }
-}
-
-.expanded.horizontal-layout {
-    .model {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-}
 
 .fab {
     display: flex;
