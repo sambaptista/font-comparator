@@ -168,65 +168,58 @@ $box-padding: 20px;
 
 .models {
     margin: 0 0 0 $settingsWidth + calc($gutter / 2);
-    padding-bottom: 75vh; // to allow top alignement
     overflow: auto;
-    min-height: calc(100vh);
-    display: flex;
-    flex-direction: column;
+    height: calc(100vh);
+    box-sizing: border-box;
+    gap: $gutter;
+    padding: 0 $gutter $gutter 0;
+
+    &.vertical-layout {
+        .model-tools {
+            margin-right: 20px;
+        }
+    }
+
+    &.vertical-layout {
+        &.collapsed {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80vh; // to allow top alignment on next/previous
+        }
+
+        &.expanded {
+            .model {
+                height: calc(100vh);
+            }
+        }
+    }
 
     &.horizontal-layout {
-        flex-direction: row;
-        align-items: flex-start;
-        padding-bottom: 0;
-        padding-right: 50vw;
+        display: grid;
+        grid-auto-flow: column;
 
-        .model {
-            flex-direction: column;
+        &.collapsed {
+            grid-auto-columns: 80ch;
+            padding-right: 50vw;
 
-            .body {
-                width: 70ch;
-            }
-
-            .model-tools {
-                margin-right: 0;
-                margin-bottom: $gutter;
-            }
-        }
-
-        &.mode-logo {
             .model {
-                min-width: auto;
-            }
-
-            .model-body {
-                text-align: center !important;
+                flex-direction: column;
             }
         }
-    }
 
-    &.expanded {
-        padding-bottom: 0;
-        padding-right: 0 !important;
+        &.expanded {
+            grid-auto-columns: calc(100vw - $settingsWidth);
 
-        .model {
-            flex-shrink: 0 !important;
-            height: calc(100vh) !important;
-            max-width: none !important;
-            max-height: none !important;
-            align-items: center;
-            margin-right: 0;
-        }
-    }
+            &.mode-logo {
+                .title {
+                    text-align: center;
+                }
+            }
 
-    &.expanded.horizontal-layout {
-        .model {
-            $width: calc(100vw - $settingsWidth);
-            width: $width !important;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-bottom: 0 !important;
-            height: calc(100vh) !important;
+            .model {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     }
 
@@ -238,7 +231,7 @@ $box-padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
     padding-top: $gutter;
-    margin-right: $gutter;
+    gap: $gutter;
 
     h1 {
         margin-top: 0;
@@ -247,7 +240,6 @@ $box-padding: 20px;
     .model-tools {
         flex-shrink: 0;
         width: 260px;
-        margin-right: $gutter;
         font-size: 16px;
         position: relative;
         left: 10px
@@ -271,6 +263,7 @@ $box-padding: 20px;
         $small-gutter: calc($gutter / 2);
 
         .title, .body {
+            box-sizing: border-box;
             border: none;
             font-family: inherit;
             line-height: inherit;
@@ -285,6 +278,7 @@ $box-padding: 20px;
             overflow: hidden;
             outline: none;
             border-radius: 8px;
+            width: 100%;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.1)
@@ -295,43 +289,20 @@ $box-padding: 20px;
             font-size: 2em;
             line-height: 2em;
             height: 2em;
-            width: 100%;
             padding: 0 $small-gutter;
         }
 
         .body {
             font-size: 1em;
             resize: none;
-            width: 100%;
-            padding: $small-gutter $small-gutter 0 $small-gutter;
+            padding: $small-gutter;
         }
     }
 }
 
-.mode-logo {
-    $line-multplier: 2em;
-
-    .title {
-        width: 100%;
-        font-size: inherit !important;
-        min-height: $line-multplier;
-        line-height: $line-multplier;
-        height: $line-multplier;
-    }
-
-    &.horizontal {
-        .title {
-            text-align: center !important;
-        }
-    }
-
-    .model {
-        min-height: $line-multplier;
-        align-items: center;
-        margin-bottom: 0;
-    }
+.mode-logo .title {
+    font-size: inherit !important;
 }
-
 
 .fab {
     display: flex;
@@ -369,7 +340,7 @@ $box-padding: 20px;
     }
 
     border: 2px dashed rgba(123, 123, 123, 0.5);
-}s
+}
 
 .cdk-drop-list-dragging .cdk-drag {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);

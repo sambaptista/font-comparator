@@ -272,7 +272,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public autoresize(persist: boolean = true) {
-
         this.autosizes.toArray().forEach(autosize => {
             autosize.reset();
             autosize.resizeToFitContent(true);

@@ -77,7 +77,9 @@
         class="models"
         [style.color]="globalSettings.textColor"
         [class.horizontal-layout]="globalSettings.horizontal"
+        [class.vertical-layout]="!globalSettings.horizontal"
         [class.expanded]="globalSettings.expanded"
+        [class.collapsed]="!globalSettings.expanded"
         [class.mode-logo]="globalSettings.logo"
         cdkDropList
         (cdkDropListDropped)="drop($event)"
