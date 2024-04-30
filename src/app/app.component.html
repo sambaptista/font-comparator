@@ -68,11 +68,21 @@
                     </label>
                 }
             </div>
+
+            <br/>
+            <strong>Default title font</strong>
+            <app-font-select
+                (selectionChange)="globalSettings.titleFont = $event?.selected || null; useFont($event);"
+                [font]="globalSettings.titleFont"
+                [fonts]="fonts"
+                [showClear]="true"
+                label="Inherits body"
+            />
         </div>
 
 
         <div class="github">
-        <a class="" href="https://sambaptista.github.io/font-comparator/"><i class="fa-brands fa-github"></i></a>
+            <a href="https://sambaptista.github.io/font-comparator/"><i class="fa-brands fa-github"></i></a>
         </div>
     </form>
 
@@ -94,12 +104,18 @@
 
                 <div class="model-tools vertical gap">
                     <app-font-select
-                        (selectionChange)="model.bodyFont = $event.selected; useFont($event);"
+                        (selectionChange)="model.titleFont = $event?.selected || null; useFont($event);"
+                        [font]="model.titleFont"
+                        [fonts]="fonts"
+                        [showClear]="true"
+                        label="Title inherits body"
+                    />
+                    <app-font-select
+                        (selectionChange)="model.bodyFont = $event?.selected || null; useFont($event);"
                         [font]="model.bodyFont"
                         [fonts]="fonts"
                         label="Body font"
-                    >
-                    </app-font-select>
+                    />
 
                     <div class="gap horizontal">
                         <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
@@ -122,7 +138,6 @@
                 @if (model.bodyFont) {
                     <div
                         class="model-body"
-                        [style.fontFamily]="model.bodyFont.family"
                         [style.fontVariant]="globalSettings.fontVariant"
                         [style.textAlign]="globalSettings.align"
                         [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
@@ -131,9 +146,10 @@
                         [style.wordSpacing.em]="getFontSetting(model,'wordSpacing')"
                         [style.letterSpacing.em]="getFontSetting(model,'letterSpacing')"
                     >
-                        <input class="title" [(ngModel)]="titleText" (change)="autoresize();" [ngModelOptions]="{standalone: true}" />
+                        <input class="title" [(ngModel)]="titleText" (change)="autoresize();" [ngModelOptions]="{standalone: true}" [style.fontFamily]="model.titleFont?.family ||  globalSettings.titleFont?.family || model.bodyFont.family" />
                         <textarea
                             *ngIf="!globalSettings.logo"
+                            [style.fontFamily]="model.bodyFont.family"
                             class="body"
                             cdkTextareaAutosize
                             #autosize="cdkTextareaAutosize"

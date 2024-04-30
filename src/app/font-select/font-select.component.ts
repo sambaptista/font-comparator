@@ -1,6 +1,7 @@
 import {Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Font} from '../services/font.service';
+import {CommonModule} from '@angular/common';
 
 export type FontSelection = {
     selected: Font;
@@ -20,7 +21,7 @@ export class FontSelectComponent implements OnInit {
 
     @HostBinding('tabindex') tabindex = 1;
 
-    @Output() selectionChange: EventEmitter<FontSelection> = new EventEmitter<FontSelection>();
+    @Output() selectionChange: EventEmitter<FontSelection | null> = new EventEmitter<FontSelection | null>();
 
     @HostListener('focus')
     public onFocus() {
@@ -32,6 +33,7 @@ export class FontSelectComponent implements OnInit {
         this._focused = false;
     }
 
+    @Input() public showClear = false;
     @Input({required: true}) public fonts: Font[] = [];
     @Input() public font: Font | null = null;
     @Input() public label: string = 'None';
@@ -67,6 +69,11 @@ export class FontSelectComponent implements OnInit {
                     break;
             }
         });
+    }
+
+    public clear(): void {
+        this.font = null;
+        this.selectionChange.emit(null)
     }
 
     private selectNext(): void {

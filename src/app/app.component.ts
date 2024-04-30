@@ -14,6 +14,7 @@ import {hex} from 'wcag-contrast';
 
 type Model = FontSettings & {
     bodyFont: Font | null;
+    titleFont: Font | null;
 }
 
 type Settings = FontSettings & {
@@ -26,6 +27,7 @@ type Settings = FontSettings & {
     horizontal: boolean;
     logo: boolean;
     expanded: boolean;
+    titleFont: Font | null;
 }
 
 @Component({
@@ -57,7 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         fontWeight: 400,
     };
 
-    private readonly defaultModel: Model = {bodyFont: null};
+    private readonly defaultModel: Model = {bodyFont: null, titleFont: null};
 
     public globalSettings: Settings = Object.assign({
         bgColor: '#ffffff',
@@ -69,6 +71,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         horizontal: false,
         logo: false,
         expanded: false,
+        titleFont: null,
     }, this.defaultFontSettings);
 
     /**
@@ -177,7 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public matchContrast(threshold: 'AAA' | 'AA', textColor?: string): boolean {
         const thresholds = this.getContrastThresholds();
-        let target = threshold === 'AAA' ? thresholds[0]: thresholds[1];
+        let target = threshold === 'AAA' ? thresholds[0] : thresholds[1];
         return hex(this.globalSettings.bgColor, textColor || this.globalSettings.textColor) > target;
     }
 
@@ -230,7 +233,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                 if (settings.models) {
                     this.models = settings.models;
-                    this.models.forEach(model => model.bodyFont ? this.fontService.loadFont(model.bodyFont) : null);
+                    this.models.forEach(model => {
+                        model.bodyFont ? this.fontService.loadFont(model.bodyFont) : null;
+                        model.titleFont ? this.fontService.loadFont(model.titleFont) : null;
+                    });
                     this.addModelIfEmpty();
                 }
 
@@ -266,7 +272,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public useFont(font: FontSelection): void {
+    public useFont(font: FontSelection | null): void {
+        if (!font) {
+            this.autoresize();
+            this.persist();
+            return;
+        }
         this.fontService.loadFont(font.selected).subscribe(() => this.autoresize());
         this.fontService.loadFont(font.next);
     }

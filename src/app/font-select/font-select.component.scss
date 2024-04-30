@@ -1,8 +1,8 @@
 :host {
     display: flex;
     align-items: center;
-
-    height: 24px;
+    gap: 10px;
+    min-height: 24px;
     line-height: 24px;
     padding: 5px 10px;
     border: 1px solid #ddd;
@@ -12,5 +12,12 @@
 
 .value {
     flex: 1;
+}
 
+.fa-solid.fa-close {
+    color: red;
+}
+
+i {
+    cursor: pointer;
 }
