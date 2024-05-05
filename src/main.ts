@@ -5,11 +5,7 @@ import {routes} from './app/app-routing.module';
 import {provideRouter, withRouterConfig} from '@angular/router';
 
 bootstrapApplication(AppComponent, {
-    providers: [
-        provideHttpClient(),
-        provideRouter(routes, withRouterConfig({paramsInheritanceStrategy: 'always'})),
-    ],
+    providers: [provideHttpClient(), provideRouter(routes, withRouterConfig({paramsInheritanceStrategy: 'always'}))],
 }).catch(err => {
     console.error(err);
 });
-

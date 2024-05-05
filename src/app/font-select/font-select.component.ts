@@ -6,19 +6,16 @@ import {CommonModule} from '@angular/common';
 export type FontSelection = {
     selected: Font;
     next: Font;
-}
+};
 
 @Component({
     selector: 'app-font-select',
     standalone: true,
-    imports: [
-        ReactiveFormsModule,
-    ],
+    imports: [ReactiveFormsModule],
     templateUrl: './font-select.component.html',
     styleUrl: './font-select.component.scss',
 })
 export class FontSelectComponent implements OnInit {
-
     @HostBinding('tabindex') tabindex = 1;
 
     @Output() selectionChange: EventEmitter<FontSelection | null> = new EventEmitter<FontSelection | null>();
@@ -40,8 +37,7 @@ export class FontSelectComponent implements OnInit {
 
     private _focused = false;
 
-    public constructor() {
-    }
+    public constructor() {}
 
     public ngOnInit(): void {
         this.handleKeydown();
@@ -49,7 +45,6 @@ export class FontSelectComponent implements OnInit {
 
     private handleKeydown(): void {
         document.addEventListener('keydown', event => {
-
             if (!this._focused) {
                 return;
             }
@@ -73,7 +68,7 @@ export class FontSelectComponent implements OnInit {
 
     public clear(): void {
         this.font = null;
-        this.selectionChange.emit(null)
+        this.selectionChange.emit(null);
     }
 
     private selectNext(): void {

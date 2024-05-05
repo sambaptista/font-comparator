@@ -1,4 +1,3 @@
-
 .setting {
     display: inline-flex;
     background: rgba(0, 0, 0, 0.1);
@@ -25,10 +24,9 @@
             height: 20px;
 
             &.bold {
-                transform:scale(0.7)
+                transform: scale(0.7);
             }
         }
-
     }
 
     [type='number'] {
@@ -42,6 +40,4 @@
         text-align: right;
         outline: 0;
     }
-
 }
-

@@ -15,7 +15,7 @@ import {hex} from 'wcag-contrast';
 type Model = FontSettings & {
     bodyFont: Font | null;
     titleFont: Font | null;
-}
+};
 
 type Settings = FontSettings & {
     bgColor: string;
@@ -28,7 +28,7 @@ type Settings = FontSettings & {
     logo: boolean;
     expanded: boolean;
     titleFont: Font | null;
-}
+};
 
 @Component({
     selector: 'app-root',
@@ -46,7 +46,6 @@ type Settings = FontSettings & {
     ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-
     @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;
     @ViewChildren('modelElement') modelElements!: QueryList<ElementRef<HTMLElement>>;
     @ViewChild('modelsWrapper', {static: true}) modelsWrapper!: ElementRef<HTMLElement>;
@@ -61,36 +60,28 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     private readonly defaultModel: Model = {bodyFont: null, titleFont: null};
 
-    public globalSettings: Settings = Object.assign({
-        bgColor: '#ffffff',
-        textColor: '#000000',
-        italic: false,
-        fontVariant: 'normal',
-        align: 'left',
-        allVariants: false,
-        horizontal: false,
-        logo: false,
-        expanded: false,
-        titleFont: null,
-    }, this.defaultFontSettings);
+    public globalSettings: Settings = Object.assign(
+        {
+            bgColor: '#ffffff',
+            textColor: '#000000',
+            italic: false,
+            fontVariant: 'normal',
+            align: 'left',
+            allVariants: false,
+            horizontal: false,
+            logo: false,
+            expanded: false,
+            titleFont: null,
+        },
+        this.defaultFontSettings,
+    );
 
     /**
      * Variants
      */
-    public variants = [
-        'italic',
-        '100',
-        '200',
-        '300',
-        'regular',
-        '500',
-        '600',
-        '700',
-        '800',
-        '900',
-    ];
+    public variants = ['italic', '100', '200', '300', 'regular', '500', '600', '700', '800', '900'];
 
-    public selectedVariants: {[key: string]: boolean} = {'regular': true};
+    public selectedVariants: {[key: string]: boolean} = {regular: true};
 
     /**
      * Categories
@@ -99,7 +90,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     public selectedCategories: {[key: string]: boolean} = {};
     public models: Model[] = [this.defaultModel];
     public titleText = 'Culture of typography';
-    public bodyText = 'Typography is more than mere text formatting. It\'s the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.';
+    public bodyText =
+        "Typography is more than mere text formatting. It's the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.";
     public fonts: Font[] = (fonts as any).default;
     private firstInteraction = new Subject<void>();
 
@@ -112,8 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         public fontService: FontsService,
         private route: ActivatedRoute,
         private router: Router,
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.categories.push('slab');
@@ -127,7 +118,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public handleEvents(): void {
         document.addEventListener('keydown', event => {
-
             if (document.activeElement !== document.body && document.activeElement !== document.documentElement) {
                 return;
             }
@@ -205,8 +195,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private getNextModelElement(attribute: 'top' | 'left', offset: number, reverse: boolean = false): HTMLElement | null {
-
+    private getNextModelElement(
+        attribute: 'top' | 'left',
+        offset: number,
+        reverse: boolean = false,
+    ): HTMLElement | null {
         let items = this.modelElements.toArray();
         items = reverse ? items.reverse() : items;
         const result = items.find((element: ElementRef) => {
@@ -226,8 +219,9 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (params['settings']) {
                 const settings = JSON.parse(params['settings']);
 
-                if (settings.categories) settings.categories.forEach((c: string) => this.selectedCategories[c] = true);
-                if (settings.variants) settings.variants.forEach((v: string) => this.selectedVariants[v] = true);
+                if (settings.categories)
+                    settings.categories.forEach((c: string) => (this.selectedCategories[c] = true));
+                if (settings.variants) settings.variants.forEach((v: string) => (this.selectedVariants[v] = true));
                 if (settings.titleText) this.titleText = settings.titleText === 'empty' ? '' : settings.titleText;
                 if (settings.bodyText) this.bodyText = settings.bodyText === 'empty' ? '' : settings.bodyText;
 
@@ -266,7 +260,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public filterFonts(persist: boolean = true): void {
-        this.fonts = this.fontService.filterFontsByCategory(this.filterTrueValues(this.selectedCategories), this.filterTrueValues(this.selectedVariants), this.globalSettings.allVariants);
+        this.fonts = this.fontService.filterFontsByCategory(
+            this.filterTrueValues(this.selectedCategories),
+            this.filterTrueValues(this.selectedVariants),
+            this.globalSettings.allVariants,
+        );
         if (persist) {
             this.persist();
         }

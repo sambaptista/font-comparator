@@ -8,9 +8,7 @@
     "bracketSpacing": false,
     "overrides": [
         {
-            "files": [
-                "*.md"
-            ],
+            "files": ["*.md"],
             "options": {
                 "tabWidth": 2
             }

@@ -8,20 +8,16 @@ export type FontSettings = {
     letterSpacing?: number;
     fontWeight?: number;
     wordSpacing?: number;
-}
+};
 
 @Component({
     selector: 'app-font-settings',
     standalone: true,
-    imports: [
-        FormsModule,
-        TextFieldModule,
-    ],
+    imports: [FormsModule, TextFieldModule],
     templateUrl: './font-settings.component.html',
     styleUrl: './font-settings.component.scss',
 })
 export class FontSettingsComponent {
-
     @Input() public model: FontSettings = {
         fontSize: 22,
         lineHeight: 1.7,
@@ -36,5 +32,4 @@ export class FontSettingsComponent {
     public change(): void {
         this.selectionChange.emit(this.model);
     }
-
 }

@@ -3,7 +3,7 @@ $gutter: 24px;
 $box-padding: 20px;
 
 .selected {
-    color: #00b000
+    color: #00b000;
 }
 
 .gap {
@@ -25,7 +25,8 @@ $box-padding: 20px;
     flex-wrap: wrap;
 }
 
-.button, .icon-button {
+.button,
+.icon-button {
     display: inline-flex;
     align-items: center;
     padding: 5px 10px;
@@ -52,11 +53,11 @@ $box-padding: 20px;
     }
 
     i {
-        font-size: 16px
+        font-size: 16px;
     }
 
     i.small {
-        font-size: 10px
+        font-size: 10px;
     }
 }
 
@@ -67,7 +68,7 @@ $box-padding: 20px;
 
     i {
         width: 16px !important;
-        text-align: center
+        text-align: center;
     }
 }
 
@@ -107,7 +108,6 @@ $box-padding: 20px;
         margin-bottom: 2px;
         border-radius: 4px;
     }
-
 
     .swap-colors-button {
         background-color: transparent;
@@ -149,11 +149,11 @@ $box-padding: 20px;
         [type='checkbox'] {
             display: none;
 
-            &:checked + .button, &:checked + .icon-button {
+            &:checked + .button,
+            &:checked + .icon-button {
                 background: rgba(100, 100, 100, 0.5);
             }
         }
-
     }
 
     [type='color'] {
@@ -230,7 +230,6 @@ $box-padding: 20px;
             }
         }
     }
-
 }
 
 .model {
@@ -250,11 +249,10 @@ $box-padding: 20px;
         width: 260px;
         font-size: 16px;
         position: relative;
-        left: 10px
+        left: 10px;
     }
 
     .model-sub-tools {
-
         & > .button {
             flex-shrink: 0;
         }
@@ -270,7 +268,8 @@ $box-padding: 20px;
 
         $small-gutter: calc($gutter / 2);
 
-        .title, .body {
+        .title,
+        .body {
             box-sizing: border-box;
             border: none;
             font-family: inherit;
@@ -289,12 +288,12 @@ $box-padding: 20px;
             width: 100%;
 
             &:hover {
-                background: rgba(255, 255, 255, 0.1)
+                background: rgba(255, 255, 255, 0.1);
             }
         }
 
         .title {
-            font-size: 2em;
+            font-size: 2.5em;
             line-height: 2em;
             height: 2em;
             padding: 0 $small-gutter;
@@ -332,13 +331,13 @@ $box-padding: 20px;
 }
 
 .cdk-drag-preview {
-
     backdrop-filter: blur(10px);
     background: transparent;
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
 
-    .body, .title {
-        opacity: 0
+    .body,
+    .title {
+        opacity: 0;
     }
 }
 

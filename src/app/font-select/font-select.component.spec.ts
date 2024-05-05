@@ -9,8 +9,7 @@ describe('FontSelectComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [FontSelectComponent],
-        })
-            .compileComponents();
+        }).compileComponents();
 
         fixture = TestBed.createComponent(FontSelectComponent);
         component = fixture.componentInstance;

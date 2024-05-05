@@ -29,8 +29,7 @@ axios
             return filteredFont;
         });
 
-
-        const fontsContent =  JSON.stringify(filteredFonts, null, 2).replace(/[\t\n]| {2}/g, '');
+        const fontsContent = JSON.stringify(filteredFonts, null, 2).replace(/[\t\n]| {2}/g, '');
         fs.writeFile(path.join(destination, 'fonts.json'), fontsContent, err => {
             if (err) {
                 console.error('Error when writing file', err);
@@ -39,13 +38,17 @@ axios
             }
         });
 
-        fs.writeFile(path.join(destination, 'categories.json'), JSON.stringify(Object.keys(categories), null, 2), err => {
-            if (err) {
-                console.error('Error when writing file', err);
-            } else {
-                console.log('File generation successfull');
-            }
-        });
+        fs.writeFile(
+            path.join(destination, 'categories.json'),
+            JSON.stringify(Object.keys(categories), null, 2),
+            err => {
+                if (err) {
+                    console.error('Error when writing file', err);
+                } else {
+                    console.log('File generation successfull');
+                }
+            },
+        );
 
         // fs.writeFile(path.join(destination, 'subsets.json'), JSON.stringify(subsets, null, 2), err => {
         // if (err) {
