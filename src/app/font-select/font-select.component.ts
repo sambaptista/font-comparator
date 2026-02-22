@@ -1,7 +1,6 @@
-import {Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output} from '@angular/core';
+import {Component, input, OnInit, output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Font} from '../services/font.service';
-
 
 export type FontSelection = {
     selected: Font;
@@ -12,31 +11,31 @@ export type FontSelection = {
     selector: 'app-font-select',
     imports: [ReactiveFormsModule],
     templateUrl: './font-select.component.html',
-    styleUrl: './font-select.component.scss'
+    styleUrl: './font-select.component.scss',
+    host: {
+        '[tabIndex]': '1',
+        '(focus)': 'onFocus()',
+        '(blur)': 'onBlur()',
+    },
 })
 export class FontSelectComponent implements OnInit {
-    @HostBinding('tabindex') tabindex = 1;
 
-    @Output() selectionChange: EventEmitter<FontSelection | null> = new EventEmitter<FontSelection | null>();
-
-    @HostListener('focus')
-    public onFocus() {
-        this._focused = true;
-    }
-
-    @HostListener('blur')
-    public onBlur() {
-        this._focused = false;
-    }
-
-    @Input() public showClear = false;
-    @Input({required: true}) public fonts: Font[] = [];
-    @Input() public font: Font | null = null;
-    @Input() public label: string = 'None';
+    public readonly selectionChange = output<FontSelection | null>();
 
     private _focused = false;
 
-    public constructor() {}
+    public onFocus(): void {
+        this._focused = true;
+    }
+
+    public onBlur(): void {
+        this._focused = false;
+    }
+
+    public readonly showClear = input(false);
+    public readonly fonts = input.required<Font[]>();
+    public readonly font = input<Font | null>(null);
+    public readonly label = input('None');
 
     public ngOnInit(): void {
         this.handleKeydown();
@@ -73,35 +72,35 @@ export class FontSelectComponent implements OnInit {
     private selectNext(): void {
         this.font = this.getNextFont(1);
         this.selectionChange.emit({
-            selected: this.font,
-            next: this.getNextFont(1, this.font),
+            selected: this.font(),
+            next: this.getNextFont(1, this.font()),
         });
     }
 
     private selectPrevious(): void {
         this.font = this.getNextFont(-1);
         this.selectionChange.emit({
-            selected: this.font,
-            next: this.getNextFont(-1, this.font),
+            selected: this.font(),
+            next: this.getNextFont(-1, this.font()),
         });
     }
 
-    private getNextFont(delta: number = 1, font: Font | null = this.font): Font {
-        const currentIndex = this.getIndex(font || this.fonts[this.fonts.length - 1]);
-        const nextIndex = (currentIndex + delta) % this.fonts.length;
-        return this.fonts[nextIndex > -1 ? nextIndex : this.fonts.length - 1];
+    private getNextFont(delta = 1, font: Font | null = this.font()): Font {
+        const currentIndex = this.getIndex(font || this.fonts()[this.fonts().length - 1]);
+        const nextIndex = (currentIndex + delta) % this.fonts().length;
+        return this.fonts()[nextIndex > -1 ? nextIndex : this.fonts().length - 1];
     }
 
-    public getIndex(value: Font) {
-        return this.fonts.findIndex(font => font.family === value.family);
+    public getIndex(value: Font): number {
+        return this.fonts().findIndex(font => font.family === value.family);
     }
 
     public randomize(): void {
-        const randomIndex = Math.floor(Math.random() * this.fonts.length);
-        this.font = this.fonts[randomIndex];
+        const randomIndex = Math.floor(Math.random() * this.fonts().length);
+        this.font = this.fonts()[randomIndex];
         this.selectionChange.emit({
-            selected: this.font,
-            next: this.font,
+            selected: this.font(),
+            next: this.font(),
         });
     }
 }

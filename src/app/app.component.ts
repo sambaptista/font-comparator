@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnInit, viewChildren} from '@angular/core';
 import {Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 
@@ -7,7 +7,7 @@ import {FontSelectComponent, FontSelection} from './font-select/font-select.comp
 import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
 import * as categories from '../assets/categories.json';
 import * as fonts from '../assets/fonts.json';
-import {delay, first, Subject, takeUntil} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {FontSettings, FontSettingsComponent} from './font-settings/font-settings.component';
 import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
 import {hex} from 'wcag-contrast';
@@ -32,21 +32,22 @@ type Settings = FontSettings & {
 
 @Component({
     selector: 'app-root',
+    imports: [RouterModule, FontSelectComponent, FormsModule, TextFieldModule, FontSettingsComponent, DragDropModule],
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    imports: [
-    RouterModule,
-    FontSelectComponent,
-    FormsModule,
-    TextFieldModule,
-    FontSettingsComponent,
-    DragDropModule
-]
+    styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit, AfterViewInit {
-    @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;
-    @ViewChildren('modelElement') modelElements!: QueryList<ElementRef<HTMLElement>>;
-    @ViewChild('modelsWrapper', {static: true}) modelsWrapper!: ElementRef<HTMLElement>;
+    public fontService = inject(FontsService);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+
+    // @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;
+    // @ViewChildren('modelElement') modelElements!: QueryList<ElementRef<HTMLElement>>;
+    // @ViewChild('modelsWrapper', {static: true}) modelsWrapper!: ElementRef<HTMLElement>;
+
+    public readonly autosizes = viewChildren<CdkTextareaAutosize>('autosize');
+    public readonly modelElements = viewChildren<ElementRef<HTMLElement>>('modelElement');
+    // public readonly modelsWrapper = viewChild.required<ElementRef<HTMLElement>>('modelsWrapper');
 
     private readonly defaultFontSettings = {
         fontSize: 23,
@@ -58,38 +59,36 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     private readonly defaultModel: Model = {bodyFont: null, titleFont: null};
 
-    public globalSettings: Settings = Object.assign(
-        {
-            bgColor: '#ffffff',
-            textColor: '#000000',
-            italic: false,
-            fontVariant: 'normal',
-            align: 'left',
-            allVariants: false,
-            horizontal: false,
-            logo: false,
-            expanded: false,
-            titleFont: null,
-        },
-        this.defaultFontSettings,
-    );
+    public globalSettings: Settings = {
+        bgColor: '#ffffff',
+        textColor: '#000000',
+        italic: false,
+        fontVariant: 'normal',
+        align: 'left',
+        allVariants: false,
+        horizontal: false,
+        logo: false,
+        expanded: false,
+        titleFont: null,
+        ...this.defaultFontSettings,
+    };
 
     /**
      * Variants
      */
     public variants = ['italic', '100', '200', '300', 'regular', '500', '600', '700', '800', '900'];
 
-    public selectedVariants: {[key: string]: boolean} = {regular: true};
+    public selectedVariants: Record<string, boolean> = {regular: true};
 
     /**
      * Categories
      */
     public categories: string[] = (categories as any).default;
-    public selectedCategories: {[key: string]: boolean} = {};
+    public selectedCategories: Record<string, boolean> = {};
     public models: Model[] = [this.defaultModel];
     public titleText = 'Culture of typography';
     public bodyText =
-        "Typography is more than mere text formatting. It's the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.";
+        'Typography is more than mere text formatting. It\'s the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.';
     public fonts: Font[] = (fonts as any).default;
     private firstInteraction = new Subject<void>();
 
@@ -98,12 +97,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     public readonly contrastBigTextAAA = 4.5;
     public readonly contrastBigTextAA = 3;
 
-    public constructor(
-        public fontService: FontsService,
-        private route: ActivatedRoute,
-        private router: Router,
-    ) {}
-
     public ngOnInit(): void {
         this.categories.push('slab');
         this.initSettings();
@@ -111,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        this.autosizes.changes.pipe(first(), delay(150)).subscribe(() => this.autoresize());
+        setTimeout(() => this.autoresize(), 150);
     }
 
     public handleEvents(): void {
@@ -168,7 +161,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public matchContrast(threshold: 'AAA' | 'AA', textColor?: string): boolean {
         const thresholds = this.getContrastThresholds();
-        let target = threshold === 'AAA' ? thresholds[0] : thresholds[1];
+        const target = threshold === 'AAA' ? thresholds[0] : thresholds[1];
         return hex(this.globalSettings.bgColor, textColor || this.globalSettings.textColor) > target;
     }
 
@@ -193,12 +186,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private getNextModelElement(
-        attribute: 'top' | 'left',
-        offset: number,
-        reverse: boolean = false,
-    ): HTMLElement | null {
-        let items = this.modelElements.toArray();
+    private getNextModelElement(attribute: 'top' | 'left', offset: number, reverse = false): HTMLElement | null {
+        let items = [...this.modelElements()];
         items = reverse ? items.reverse() : items;
         const result = items.find((element: ElementRef) => {
             const value = element.nativeElement.getBoundingClientRect()[attribute];
@@ -214,8 +203,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public initSettings(): void {
         this.route.queryParams.pipe(takeUntil(this.firstInteraction)).subscribe(params => {
-            if (params['settings']) {
-                const settings = JSON.parse(params['settings']);
+            if (params.settings) {
+                const settings = JSON.parse(params.settings);
 
                 if (settings.categories)
                     settings.categories.forEach((c: string) => (this.selectedCategories[c] = true));
@@ -226,9 +215,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                 if (settings.models) {
                     this.models = settings.models;
                     this.models.forEach(model => {
-                        model.bodyFont ? this.fontService.loadFont(model.bodyFont) : null;
-                        model.titleFont ? this.fontService.loadFont(model.titleFont) : null;
+                        if (model.bodyFont) this.fontService.loadFont(model.bodyFont);
+                        if (model.titleFont) this.fontService.loadFont(model.titleFont);
                     });
+
                     this.addModelIfEmpty();
                 }
 
@@ -257,7 +247,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.router.navigate([], {queryParams: queryParams});
     }
 
-    public filterFonts(persist: boolean = true): void {
+    public filterFonts(persist = true): void {
         this.fonts = this.fontService.filterFontsByCategory(
             this.filterTrueValues(this.selectedCategories),
             this.filterTrueValues(this.selectedVariants),
@@ -278,8 +268,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.fontService.loadFont(font.next);
     }
 
-    public autoresize(persist: boolean = true) {
-        this.autosizes.toArray().forEach(autosize => {
+    public autoresize(persist = true): void {
+        this.autosizes().forEach(autosize => {
             autosize.reset();
             autosize.resizeToFitContent(true);
         });
@@ -289,7 +279,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private filterTrueValues(obj: {[key: string]: boolean}): string[] {
+    private filterTrueValues(obj: Record<string, boolean>): string[] {
         const filteredObj: any = {};
         for (const key in obj) {
             if (obj[key]) {
@@ -359,13 +349,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public addModel(model: Model = this.defaultModel): void {
-        this.models.push(Object.assign({}, model));
+        this.models.push({...model});
         setTimeout(() => {
-            this.modelElements.last.nativeElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
+            this.modelElements()
+                .at(-1)!
+                .nativeElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
         }, 20);
     }
 
-    public drop(event: CdkDragDrop<Model[]>) {
+    public drop(event: CdkDragDrop<Model[]>): void {
         moveItemInArray(this.models, event.previousIndex, event.currentIndex);
         this.persist();
     }

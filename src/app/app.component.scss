@@ -84,6 +84,7 @@ $box-padding: 20px;
 .github {
     text-align: center;
     font-size: 42px;
+
     a {
         color: white;
     }
@@ -288,7 +289,7 @@ $box-padding: 20px;
             width: 100%;
 
             &:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.2);
             }
         }
 

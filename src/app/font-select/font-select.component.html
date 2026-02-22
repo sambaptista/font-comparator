@@ -1,5 +1,5 @@
-<div class="value">{{ font?.family || label }}</div>
-@if (showClear) {
-    <i (click)="clear()" class="fa-solid fa-close"></i>
+<div class="value">{{ font()?.family || label() }}</div>
+@if (showClear()) {
+    <i class="fa-solid fa-close" (click)="clear()"></i>
 }
-<i (click)="randomize()" class="fa-solid fa-shuffle"></i>
+<i class="fa-solid fa-shuffle" (click)="randomize()"></i>

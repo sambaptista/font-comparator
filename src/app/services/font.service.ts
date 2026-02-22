@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as fonts from '../../assets/fonts.json';
 import {intersection} from 'es-toolkit';
-import {first, fromEvent, map, Observable, of, take} from 'rxjs';
+import {first, fromEvent, map, Observable, of} from 'rxjs';
 
 export type Font = {
     family: string;
@@ -14,8 +14,6 @@ export type Font = {
 })
 export class FontsService {
     private loadedFonts: Record<string, true> = {};
-
-    constructor() {}
 
     public filterFontsByCategory(
         selectedCategories: string[],

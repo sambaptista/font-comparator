@@ -3,15 +3,9 @@
     "tabWidth": 4,
     "singleQuote": true,
     "trailingComma": "all",
+    "htmlWhitespaceSensitivity": "strict",
     "printWidth": 120,
     "arrowParens": "avoid",
     "bracketSpacing": false,
-    "overrides": [
-        {
-            "files": ["*.md"],
-            "options": {
-                "tabWidth": 2
-            }
-        }
-    ]
+    "plugins": ["prettier-plugin-css-order"]
 }
