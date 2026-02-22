@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as fonts from '../../assets/fonts.json';
-import {intersection} from 'lodash-es';
+import {intersection} from 'es-toolkit';
 import {first, fromEvent, map, Observable, of, take} from 'rxjs';
 
 export type Font = {

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Font} from '../services/font.service';
-import {CommonModule} from '@angular/common';
+
 
 export type FontSelection = {
     selected: Font;
@@ -10,10 +10,9 @@ export type FontSelection = {
 
 @Component({
     selector: 'app-font-select',
-    standalone: true,
     imports: [ReactiveFormsModule],
     templateUrl: './font-select.component.html',
-    styleUrl: './font-select.component.scss',
+    styleUrl: './font-select.component.scss'
 })
 export class FontSelectComponent implements OnInit {
     @HostBinding('tabindex') tabindex = 1;

@@ -12,10 +12,9 @@ export type FontSettings = {
 
 @Component({
     selector: 'app-font-settings',
-    standalone: true,
     imports: [FormsModule, TextFieldModule],
     templateUrl: './font-settings.component.html',
-    styleUrl: './font-settings.component.scss',
+    styleUrl: './font-settings.component.scss'
 })
 export class FontSettingsComponent {
     @Input() public model: FontSettings = {

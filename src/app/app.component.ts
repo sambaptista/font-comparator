@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
-import {CommonModule} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {FontSelectComponent, FontSelection} from './font-select/font-select.component';
 import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
@@ -34,16 +34,14 @@ type Settings = FontSettings & {
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: true,
     imports: [
-        RouterModule,
-        CommonModule,
-        FontSelectComponent,
-        FormsModule,
-        TextFieldModule,
-        FontSettingsComponent,
-        DragDropModule,
-    ],
+    RouterModule,
+    FontSelectComponent,
+    FormsModule,
+    TextFieldModule,
+    FontSettingsComponent,
+    DragDropModule
+]
 })
 export class AppComponent implements OnInit, AfterViewInit {
     @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;

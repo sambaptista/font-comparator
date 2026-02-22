@@ -1,287 +1,311 @@
 <div [style.background]="globalSettings.bgColor">
-    <form class="global-settings vertical">
-        <div class="setting-group horizontal gap">
-            <button class="button icon-button" *ngIf="!globalSettings.horizontal" (click)="toggleLayout()">
-                <i class="fa-solid fa-grip"></i>
-            </button>
-            <button class="button icon-button" *ngIf="globalSettings.horizontal" (click)="toggleLayout()">
-                <i class="fa-solid fa-grip-vertical"></i>
-            </button>
-            <button class="button icon-button" *ngIf="globalSettings.expanded" (click)="toggleExpanded()">
-                <i class="fa-solid fa-compress"></i>
-            </button>
-            <button class="button icon-button" *ngIf="!globalSettings.expanded" (click)="toggleExpanded()">
-                <i class="fa-solid fa-expand"></i>
-            </button>
-            <button class="button" *ngIf="!globalSettings.logo" (click)="toggleLogoMode()">Title</button>
-            <button class="button" *ngIf="globalSettings.logo" (click)="toggleLogoMode()">Text</button>
-        </div>
+  <form class="global-settings vertical">
+    <div class="setting-group horizontal gap">
+      @if (!globalSettings.horizontal) {
+        <button class="button icon-button" (click)="toggleLayout()">
+          <i class="fa-solid fa-grip"></i>
+        </button>
+      }
+      @if (globalSettings.horizontal) {
+        <button class="button icon-button" (click)="toggleLayout()">
+          <i class="fa-solid fa-grip-vertical"></i>
+        </button>
+      }
+      @if (globalSettings.expanded) {
+        <button class="button icon-button" (click)="toggleExpanded()">
+          <i class="fa-solid fa-compress"></i>
+        </button>
+      }
+      @if (!globalSettings.expanded) {
+        <button class="button icon-button" (click)="toggleExpanded()">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+      }
+      @if (!globalSettings.logo) {
+        <button class="button" (click)="toggleLogoMode()">Title</button>
+      }
+      @if (globalSettings.logo) {
+        <button class="button" (click)="toggleLogoMode()">Text</button>
+      }
+    </div>
 
-        <div class="setting-group">
-            <div class="horizontal setting">
-                <input
-                    type="color"
-                    name="colorPicker"
-                    [(ngModel)]="globalSettings.textColor"
-                    (change)="persist()"
-                    [ngModelOptions]="{standalone: true}"
-                />
-                <button class="icon-button swap-colors-button" (click)="swapColors()">
-                    <i class="fa-solid fa-rotate"></i>
-                </button>
-                <input
-                    type="color"
-                    name="bgPicker"
-                    [(ngModel)]="globalSettings.bgColor"
-                    (change)="fixContrast('AA'); persist()"
-                    [ngModelOptions]="{standalone: true}"
-                />
-                <button
-                    class="icon-button swap-colors-button contrast-button"
-                    [class.alert]="!matchContrast('AAA')"
-                    [class.error]="!matchContrast('AA')"
-                    (click)="fixContrast('AAA')"
-                >
-                    <i class="fa-solid fa-circle-half-stroke"></i>
-                </button>
-            </div>
+    <div class="setting-group">
+      <div class="horizontal setting">
+        <input
+          type="color"
+          name="colorPicker"
+          [(ngModel)]="globalSettings.textColor"
+          (change)="persist()"
+          [ngModelOptions]="{standalone: true}"
+          />
+        <button class="icon-button swap-colors-button" (click)="swapColors()">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+        <input
+          type="color"
+          name="bgPicker"
+          [(ngModel)]="globalSettings.bgColor"
+          (change)="fixContrast('AA'); persist()"
+          [ngModelOptions]="{standalone: true}"
+          />
+        <button
+          class="icon-button swap-colors-button contrast-button"
+          [class.alert]="!matchContrast('AAA')"
+          [class.error]="!matchContrast('AA')"
+          (click)="fixContrast('AAA')"
+          >
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+      </div>
 
-            <app-font-settings
-                [model]="globalSettings"
-                (change)="autoresize()"
-                (reset)="resetGlobalFontSettings()"
-            ></app-font-settings>
+      <app-font-settings
+        [model]="globalSettings"
+        (change)="autoresize()"
+        (reset)="resetGlobalFontSettings()"
+      ></app-font-settings>
 
-            <div class="horizontal gap">
-                <label class="checkbox">
-                    <input
-                        type="checkbox"
-                        [value]="1"
-                        [(ngModel)]="globalSettings.italic"
-                        (ngModelChange)="persist()"
-                        [ngModelOptions]="{standalone: true}"
-                    />
-                    <span class="icon-button"><i class="fa-solid fa-italic"></i></span>
-                </label>
-
-                <button
-                    *ngIf="globalSettings.fontVariant === 'all-small-caps'"
-                    (click)="globalSettings.fontVariant = 'normal'; persist()"
-                    class="icon-button active"
-                >
-                    <i class="fa-solid fa-a small"></i>
-                </button>
-                <button
-                    *ngIf="globalSettings.fontVariant === 'normal'"
-                    (click)="globalSettings.fontVariant = 'small-caps'; persist()"
-                    class="icon-button"
-                >
-                    <i class="fa-solid fa-a"></i>
-                </button>
-                <button
-                    *ngIf="globalSettings.fontVariant === 'small-caps'"
-                    (click)="globalSettings.fontVariant = 'all-small-caps'; persist()"
-                    class="icon-button active"
-                >
-                    <i class="fa-solid fa-a"></i>
-                </button>
-
-                @if (!globalSettings.logo) {
-                    <button
-                        *ngIf="globalSettings.align === 'left'"
-                        (click)="globalSettings.align = 'center'; persist()"
-                        class="icon-button"
-                    >
-                        <i class="fa-solid fa-align-left"></i>
-                    </button>
-                    <button
-                        *ngIf="globalSettings.align === 'center'"
-                        (click)="globalSettings.align = 'right'; persist()"
-                        class="icon-button active"
-                    >
-                        <i class="fa-solid fa-align-center"></i>
-                    </button>
-                    <button
-                        *ngIf="globalSettings.align === 'right'"
-                        (click)="globalSettings.align = 'justify'; persist()"
-                        class="icon-button active"
-                    >
-                        <i class="fa-solid fa-align-right"></i>
-                    </button>
-                    <button
-                        *ngIf="globalSettings.align === 'justify'"
-                        (click)="globalSettings.align = 'left'; persist()"
-                        class="icon-button active"
-                    >
-                        <i class="fa-solid fa-align-justify"></i>
-                    </button>
-                }
-            </div>
-
-            <br />
-            <div class="inline-listing">
-                @for (category of categories; track category) {
-                    <label class="category checkbox">
-                        <input
-                            type="checkbox"
-                            [value]="category"
-                            [(ngModel)]="selectedCategories[category]"
-                            [ngModelOptions]="{standalone: true}"
-                            (change)="filterFonts()"
-                        />
-                        <span class="button">{{ category }}</span>
-                    </label>
-                }
-            </div>
-
-            <br />
-            <div class="horizontal">
-                <label class="checkbox" style="margin-bottom: 4px">
-                    <input
-                        type="checkbox"
-                        [value]="1"
-                        [(ngModel)]="globalSettings.allVariants"
-                        (change)="filterFonts()"
-                        [ngModelOptions]="{standalone: true}"
-                    />
-                    <span class="icon-button" *ngIf="!globalSettings.allVariants">Or :</span>
-                    <span class="icon-button" *ngIf="globalSettings.allVariants">And :</span>
-                </label>
-                <div class="spacer"></div>
-                <strong>{{ fonts.length }} fonts</strong>
-            </div>
-
-            <div class="inline-listing">
-                @for (variant of variants; track variant) {
-                    <label class="variant checkbox">
-                        <input
-                            type="checkbox"
-                            [value]="variant"
-                            [(ngModel)]="selectedVariants[variant]"
-                            (change)="filterFonts()"
-                            [ngModelOptions]="{standalone: true}"
-                        />
-                        <span class="button">{{ variant }}</span>
-                    </label>
-                }
-            </div>
-
-            <br />
-            <strong>Default title font</strong>
-            <app-font-select
-                (selectionChange)="globalSettings.titleFont = $event?.selected || null; useFont($event)"
-                [font]="globalSettings.titleFont"
-                [fonts]="fonts"
-                [showClear]="true"
-                label="Inherits body"
+      <div class="horizontal gap">
+        <label class="checkbox">
+          <input
+            type="checkbox"
+            [value]="1"
+            [(ngModel)]="globalSettings.italic"
+            (ngModelChange)="persist()"
+            [ngModelOptions]="{standalone: true}"
             />
-        </div>
+          <span class="icon-button"><i class="fa-solid fa-italic"></i></span>
+        </label>
 
-        <div class="github">
-            <a href="https://sambaptista.github.io/font-comparator/"><i class="fa-brands fa-github"></i></a>
-        </div>
-    </form>
+        @if (globalSettings.fontVariant === 'all-small-caps') {
+          <button
+            (click)="globalSettings.fontVariant = 'normal'; persist()"
+            class="icon-button active"
+            >
+            <i class="fa-solid fa-a small"></i>
+          </button>
+        }
+        @if (globalSettings.fontVariant === 'normal') {
+          <button
+            (click)="globalSettings.fontVariant = 'small-caps'; persist()"
+            class="icon-button"
+            >
+            <i class="fa-solid fa-a"></i>
+          </button>
+        }
+        @if (globalSettings.fontVariant === 'small-caps') {
+          <button
+            (click)="globalSettings.fontVariant = 'all-small-caps'; persist()"
+            class="icon-button active"
+            >
+            <i class="fa-solid fa-a"></i>
+          </button>
+        }
 
-    <div
-        #modelsWrapper
-        class="models"
-        [style.color]="globalSettings.textColor"
-        [class.horizontal-layout]="globalSettings.horizontal"
-        [class.vertical-layout]="!globalSettings.horizontal"
-        [class.expanded]="globalSettings.expanded"
-        [class.collapsed]="!globalSettings.expanded"
-        [class.mode-logo]="globalSettings.logo"
-        cdkDropList
-        (cdkDropListDropped)="drop($event)"
+        @if (!globalSettings.logo) {
+          @if (globalSettings.align === 'left') {
+            <button
+              (click)="globalSettings.align = 'center'; persist()"
+              class="icon-button"
+              >
+              <i class="fa-solid fa-align-left"></i>
+            </button>
+          }
+          @if (globalSettings.align === 'center') {
+            <button
+              (click)="globalSettings.align = 'right'; persist()"
+              class="icon-button active"
+              >
+              <i class="fa-solid fa-align-center"></i>
+            </button>
+          }
+          @if (globalSettings.align === 'right') {
+            <button
+              (click)="globalSettings.align = 'justify'; persist()"
+              class="icon-button active"
+              >
+              <i class="fa-solid fa-align-right"></i>
+            </button>
+          }
+          @if (globalSettings.align === 'justify') {
+            <button
+              (click)="globalSettings.align = 'left'; persist()"
+              class="icon-button active"
+              >
+              <i class="fa-solid fa-align-justify"></i>
+            </button>
+          }
+        }
+      </div>
+
+      <br />
+      <div class="inline-listing">
+        @for (category of categories; track category) {
+          <label class="category checkbox">
+            <input
+              type="checkbox"
+              [value]="category"
+              [(ngModel)]="selectedCategories[category]"
+              [ngModelOptions]="{standalone: true}"
+              (change)="filterFonts()"
+              />
+            <span class="button">{{ category }}</span>
+          </label>
+        }
+      </div>
+
+      <br />
+      <div class="horizontal">
+        <label class="checkbox" style="margin-bottom: 4px">
+          <input
+            type="checkbox"
+            [value]="1"
+            [(ngModel)]="globalSettings.allVariants"
+            (change)="filterFonts()"
+            [ngModelOptions]="{standalone: true}"
+            />
+          @if (!globalSettings.allVariants) {
+            <span class="icon-button">Or :</span>
+          }
+          @if (globalSettings.allVariants) {
+            <span class="icon-button">And :</span>
+          }
+        </label>
+        <div class="spacer"></div>
+        <strong>{{ fonts.length }} fonts</strong>
+      </div>
+
+      <div class="inline-listing">
+        @for (variant of variants; track variant) {
+          <label class="variant checkbox">
+            <input
+              type="checkbox"
+              [value]="variant"
+              [(ngModel)]="selectedVariants[variant]"
+              (change)="filterFonts()"
+              [ngModelOptions]="{standalone: true}"
+              />
+            <span class="button">{{ variant }}</span>
+          </label>
+        }
+      </div>
+
+      <br />
+      <strong>Default title font</strong>
+      <app-font-select
+        (selectionChange)="globalSettings.titleFont = $event?.selected || null; useFont($event)"
+        [font]="globalSettings.titleFont"
+        [fonts]="fonts"
+        [showClear]="true"
+        label="Inherits body"
+        />
+    </div>
+
+    <div class="github">
+      <a href="https://sambaptista.github.io/font-comparator/"><i class="fa-brands fa-github"></i></a>
+    </div>
+  </form>
+
+  <div
+    #modelsWrapper
+    class="models"
+    [style.color]="globalSettings.textColor"
+    [class.horizontal-layout]="globalSettings.horizontal"
+    [class.vertical-layout]="!globalSettings.horizontal"
+    [class.expanded]="globalSettings.expanded"
+    [class.collapsed]="!globalSettings.expanded"
+    [class.mode-logo]="globalSettings.logo"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
     >
-        @for (model of models; track model; let i = $index) {
-            <form cdkDrag #modelElement class="model" [style.fontSize.px]="getFontSetting(model, 'fontSize')">
-                <div class="model-tools vertical gap">
-                    <app-font-select
-                        (selectionChange)="model.titleFont = $event?.selected || null; useFont($event)"
-                        [font]="model.titleFont"
-                        [fonts]="fonts"
-                        [showClear]="true"
-                        label="Title inherits body"
-                    />
-                    <app-font-select
-                        (selectionChange)="model.bodyFont = $event?.selected || null; useFont($event)"
-                        [font]="model.bodyFont"
-                        [fonts]="fonts"
-                        label="Body font"
-                    />
+    @for (model of models; track model; let i = $index) {
+      <form cdkDrag #modelElement class="model" [style.fontSize.px]="getFontSetting(model, 'fontSize')">
+        <div class="model-tools vertical gap">
+          <app-font-select
+            (selectionChange)="model.titleFont = $event?.selected || null; useFont($event)"
+            [font]="model.titleFont"
+            [fonts]="fonts"
+            [showClear]="true"
+            label="Title inherits body"
+            />
+          <app-font-select
+            (selectionChange)="model.bodyFont = $event?.selected || null; useFont($event)"
+            [font]="model.bodyFont"
+            [fonts]="fonts"
+            label="Body font"
+            />
 
-                    <div class="gap horizontal">
-                        <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
-                        <button class="button warn" (click)="remove(i)"><i class="fa-solid fa-trash"></i></button>
+          <div class="gap horizontal">
+            <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
+            <button class="button warn" (click)="remove(i)"><i class="fa-solid fa-trash"></i></button>
 
-                        @if (model && model.bodyFont) {
-                            <a
-                                class="button"
-                                [attr.href]="'https://fonts.google.com/specimen/' + model.bodyFont.family"
-                                target="_blank"
-                                ><i class="fa-solid fa-link"></i
-                            ></a>
-                        }
+            @if (model && model.bodyFont) {
+              <a
+                class="button"
+                [attr.href]="'https://fonts.google.com/specimen/' + model.bodyFont.family"
+                target="_blank"
+                ><i class="fa-solid fa-link"></i
+              ></a>
+            }
 
-                        <button class="button" cdkDragHandle><i class="fa-solid fa-up-down-left-right"></i></button>
-                        <div class="spacer"></div>
-                        @if (model.bodyFont?.variants?.length) {
-                            {{ model.bodyFont?.variants?.length }} variants
-                        }
-                    </div>
+            <button class="button" cdkDragHandle><i class="fa-solid fa-up-down-left-right"></i></button>
+            <div class="spacer"></div>
+            @if (model.bodyFont?.variants?.length) {
+              {{ model.bodyFont?.variants?.length }} variants
+            }
+          </div>
 
-                    <app-font-settings
-                        [model]="model"
-                        (selectionChange)="autoresize()"
-                        (reset)="resetFontSettings(model)"
-                    ></app-font-settings>
-                </div>
+          <app-font-settings
+            [model]="model"
+            (selectionChange)="autoresize()"
+            (reset)="resetFontSettings(model)"
+          ></app-font-settings>
+        </div>
 
-                @if (model.bodyFont) {
-                    <div
-                        class="model-body"
-                        [style.fontVariant]="globalSettings.fontVariant"
-                        [style.textAlign]="globalSettings.align"
-                        [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
-                        [style.lineHeight.em]="getFontSetting(model, 'lineHeight')"
-                        [style.fontWeight]="getFontSetting(model, 'fontWeight')"
-                        [style.wordSpacing.em]="getFontSetting(model, 'wordSpacing')"
-                        [style.letterSpacing.em]="getFontSetting(model, 'letterSpacing')"
-                    >
-                        <input
-                            class="title"
-                            [(ngModel)]="titleText"
-                            (change)="autoresize()"
-                            [ngModelOptions]="{standalone: true}"
+        @if (model.bodyFont) {
+          <div
+            class="model-body"
+            [style.fontVariant]="globalSettings.fontVariant"
+            [style.textAlign]="globalSettings.align"
+            [style.fontStyle]="globalSettings.italic ? 'italic' : 'normal'"
+            [style.lineHeight.em]="getFontSetting(model, 'lineHeight')"
+            [style.fontWeight]="getFontSetting(model, 'fontWeight')"
+            [style.wordSpacing.em]="getFontSetting(model, 'wordSpacing')"
+            [style.letterSpacing.em]="getFontSetting(model, 'letterSpacing')"
+            >
+            <input
+              class="title"
+              [(ngModel)]="titleText"
+              (change)="autoresize()"
+              [ngModelOptions]="{standalone: true}"
                             [style.fontFamily]="
                                 model.titleFont?.family || globalSettings.titleFont?.family || model.bodyFont.family
                             "
-                        />
-                        <textarea
-                            *ngIf="!globalSettings.logo"
-                            [style.fontFamily]="model.bodyFont.family"
-                            class="body"
-                            cdkTextareaAutosize
-                            #autosize="cdkTextareaAutosize"
-                            [(ngModel)]="bodyText"
-                            (change)="autoresize()"
-                            [ngModelOptions]="{standalone: true}"
-                        ></textarea>
-                    </div>
-                }
-            </form>
+              />
+            @if (!globalSettings.logo) {
+              <textarea
+                [style.fontFamily]="model.bodyFont.family"
+                class="body"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                [(ngModel)]="bodyText"
+                (change)="autoresize()"
+                [ngModelOptions]="{standalone: true}"
+              ></textarea>
+            }
+          </div>
         }
-    </div>
+      </form>
+    }
+  </div>
 
-    <button
-        (click)="addModel()"
-        class="icon-button fab"
-        [style.background]="globalSettings.textColor"
-        [style.color]="globalSettings.bgColor"
+  <button
+    (click)="addModel()"
+    class="icon-button fab"
+    [style.background]="globalSettings.textColor"
+    [style.color]="globalSettings.bgColor"
     >
-        <i class="fa-solid fa-add"></i>
-    </button>
+    <i class="fa-solid fa-add"></i>
+  </button>
 
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
