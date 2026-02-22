@@ -1,4 +1,4 @@
-import {Component, input, OnInit, output} from '@angular/core';
+import {Component, input, model, OnInit, output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Font} from '../services/font.service';
 
@@ -19,7 +19,6 @@ export type FontSelection = {
     },
 })
 export class FontSelectComponent implements OnInit {
-
     public readonly selectionChange = output<FontSelection | null>();
 
     private _focused = false;
@@ -34,7 +33,7 @@ export class FontSelectComponent implements OnInit {
 
     public readonly showClear = input(false);
     public readonly fonts = input.required<Font[]>();
-    public readonly font = input<Font | null>(null);
+    public readonly font = model<Font | null>(null);
     public readonly label = input('None');
 
     public ngOnInit(): void {
@@ -65,23 +64,25 @@ export class FontSelectComponent implements OnInit {
     }
 
     public clear(): void {
-        this.font = null;
+        this.font.set(null);
         this.selectionChange.emit(null);
     }
 
     private selectNext(): void {
-        this.font = this.getNextFont(1);
+        const nextFont = this.getNextFont(1);
+        this.font.set(nextFont);
         this.selectionChange.emit({
-            selected: this.font(),
-            next: this.getNextFont(1, this.font()),
+            selected: nextFont,
+            next: this.getNextFont(1, nextFont),
         });
     }
 
     private selectPrevious(): void {
-        this.font = this.getNextFont(-1);
+        const prevFont = this.getNextFont(-1);
+        this.font.set(prevFont);
         this.selectionChange.emit({
-            selected: this.font(),
-            next: this.getNextFont(-1, this.font()),
+            selected: prevFont,
+            next: this.getNextFont(-1, prevFont),
         });
     }
 
@@ -97,10 +98,11 @@ export class FontSelectComponent implements OnInit {
 
     public randomize(): void {
         const randomIndex = Math.floor(Math.random() * this.fonts().length);
-        this.font = this.fonts()[randomIndex];
+        const randomFont = this.fonts()[randomIndex];
+        this.font.set(randomFont);
         this.selectionChange.emit({
-            selected: this.font(),
-            next: this.font(),
+            selected: randomFont,
+            next: randomFont,
         });
     }
 }
