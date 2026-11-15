@@ -11,7 +11,7 @@
         padding-right: 7px;
     }
 
-    label {
+    .icon {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -27,6 +27,13 @@
                 transform: scale(0.7);
             }
         }
+    }
+
+    button.icon {
+        border: 0;
+        background: none;
+        padding: 0;
+        color: inherit;
     }
 
     [type='number'] {

@@ -58,7 +58,7 @@
 
             <app-font-settings
                 [model]="globalSettings"
-                (change)="autoresize()"
+                (selectionChange)="autoresize()"
                 (resetFired)="resetGlobalFontSettings()"
             />
 
@@ -114,7 +114,44 @@
                         </button>
                     }
                 }
+
+                <input #iconFile type="file" accept=".svg,image/svg+xml" hidden (change)="loadIcon($event)" />
+                <button class="icon-button" [class.active]="iconUrl()" (click)="iconFile.click()">
+                    <i class="fa-solid fa-image"></i>
+                </button>
+                @if (iconUrl()) {
+                    <button class="icon-button" (click)="removeIcon()">
+                        <i class="fa-solid fa-close"></i>
+                    </button>
+                }
             </div>
+
+            @if (iconUrl()) {
+                <div class="horizontal gap icon-gauge">
+                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                    <input
+                        type="range"
+                        min="0.2"
+                        max="3"
+                        step="0.05"
+                        [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="globalSettings.iconSize"
+                        (change)="persist()"
+                    />
+                </div>
+                <div class="horizontal gap icon-gauge">
+                    <i class="fa-solid fa-arrows-up-down"></i>
+                    <input
+                        type="range"
+                        min="-1"
+                        max="1"
+                        step="0.01"
+                        [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="globalSettings.iconOffset"
+                        (change)="persist()"
+                    />
+                </div>
+            }
 
             <br />
             <div class="inline-listing">
@@ -205,12 +242,14 @@
                         [showClear]="true"
                         (selectionChange)="model.titleFont = $event?.selected || null; useFont($event)"
                     />
-                    <app-font-select
-                        label="Body font"
-                        [font]="model.bodyFont"
-                        [fonts]="fonts"
-                        (selectionChange)="model.bodyFont = $event?.selected || null; useFont($event)"
-                    />
+                    @if (!globalSettings.logo) {
+                        <app-font-select
+                            label="Body font"
+                            [font]="model.bodyFont"
+                            [fonts]="fonts"
+                            (selectionChange)="model.bodyFont = $event?.selected || null; useFont($event)"
+                        />
+                    }
 
                     <div class="gap horizontal">
                         <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
@@ -249,15 +288,26 @@
                     [style.wordSpacing.em]="getFontSetting(model, 'wordSpacing')"
                     [style.letterSpacing.em]="getFontSetting(model, 'letterSpacing')"
                 >
-                    <input
-                        class="title"
-                        [ngModelOptions]="{standalone: true}"
-                        [style.fontFamily]="
-                            model.titleFont?.family || globalSettings.titleFont?.family || model.bodyFont?.family
-                        "
-                        [(ngModel)]="titleText"
-                        (change)="autoresize()"
-                    />
+                    <div class="title-row" [class.has-icon]="iconUrl()">
+                        @if (iconUrl(); as url) {
+                            <img
+                                class="title-icon"
+                                alt=""
+                                [src]="url"
+                                [style.height.em]="globalSettings.iconSize"
+                                [style.transform]="`translateY(${globalSettings.iconOffset}em)`"
+                            />
+                        }
+                        <input
+                            class="title"
+                            [ngModelOptions]="{standalone: true}"
+                            [style.fontFamily]="
+                                model.titleFont?.family || globalSettings.titleFont?.family || model.bodyFont?.family
+                            "
+                            [(ngModel)]="titleText"
+                            (change)="autoresize()"
+                        />
+                    </div>
                     @if (!globalSettings.logo) {
                         <textarea
                             #autosize="cdkTextareaAutosize"

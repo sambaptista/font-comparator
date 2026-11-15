@@ -1,4 +1,14 @@
-import {type AfterViewInit, Component, type ElementRef, inject, type OnInit, viewChildren} from '@angular/core';
+import {
+    type AfterViewInit,
+    afterNextRender,
+    Component,
+    type ElementRef,
+    inject,
+    Injector,
+    type OnInit,
+    signal,
+    viewChildren,
+} from '@angular/core';
 import {type Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 
@@ -28,6 +38,9 @@ type Settings = FontSettings & {
     logo: boolean;
     expanded: boolean;
     titleFont: Font | null;
+    icon: string | null;
+    iconSize: number;
+    iconOffset: number;
 };
 
 @Component({
@@ -40,6 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     public fontService = inject(FontsService);
     private route = inject(ActivatedRoute);
     private router = inject(Router);
+    private injector = inject(Injector);
 
     // @ViewChildren('autosize') autosizes!: QueryList<CdkTextareaAutosize>;
     // @ViewChildren('modelElement') modelElements!: QueryList<ElementRef<HTMLElement>>;
@@ -70,8 +84,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         logo: false,
         expanded: false,
         titleFont: null,
+        icon: null,
+        iconSize: 1,
+        iconOffset: 0,
         ...this.defaultFontSettings,
     };
+
+    public readonly iconUrl = signal<string | null>(null);
 
     /**
      * Variants
@@ -224,6 +243,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                 if (settings.globalStyles) {
                     this.globalSettings = Object.assign(this.globalSettings, settings.globalStyles);
+                    this.setIcon(this.globalSettings.icon);
                 }
 
                 this.filterFonts(false);
@@ -269,10 +289,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public autoresize(persist = true): void {
-        this.autosizes().forEach(autosize => {
-            autosize.reset();
-            autosize.resizeToFitContent(true);
-        });
+        afterNextRender(
+            () => {
+                this.autosizes().forEach(autosize => {
+                    autosize.reset();
+                    autosize.resizeToFitContent(true);
+                });
+            },
+            {injector: this.injector},
+        );
 
         if (persist) {
             this.persist();
@@ -308,6 +333,33 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.persist();
     }
 
+    public loadIcon(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        input.value = '';
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            this.setIcon(reader.result as string);
+            this.persist();
+        });
+        reader.readAsText(file);
+    }
+
+    public removeIcon(): void {
+        this.setIcon(null);
+        this.persist();
+    }
+
+    private setIcon(svg: string | null): void {
+        this.globalSettings.icon = svg;
+        this.iconUrl.set(svg ? 'data:image/svg+xml,' + encodeURIComponent(svg) : null);
+    }
+
     public addModelIfEmpty(): void {
         if (!this.models.length) {
             this.models.push(this.defaultModel);
@@ -331,7 +383,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public getFontSetting(model: Model, name: keyof FontSettings): number | null {
-        return model[name] || this.globalSettings[name] || null;
+        return model[name] ?? this.globalSettings[name] ?? null;
     }
 
     public resetFontSettings(model: Model): void {

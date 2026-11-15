@@ -59,8 +59,47 @@ export class FontSelectComponent implements OnInit {
                     event.preventDefault();
                     event.stopPropagation();
                     break;
+                default:
+                    if (this.selectByFirstLetter(event)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
             }
         });
+    }
+
+    private selectByFirstLetter(event: KeyboardEvent): boolean {
+        if (event.key.length !== 1 || event.key === ' ' || event.ctrlKey || event.metaKey || event.altKey) {
+            return false;
+        }
+
+        const font = this.getNextFontStartingWith(event.key, this.font());
+        if (!font) {
+            return false;
+        }
+
+        this.font.set(font);
+        this.selectionChange.emit({
+            selected: font,
+            next: this.getNextFontStartingWith(event.key, font) ?? font,
+        });
+
+        return true;
+    }
+
+    private getNextFontStartingWith(letter: string, current: Font | null): Font | null {
+        const startsWithLetter = (font: Font): boolean => font.family.toLowerCase().startsWith(letter.toLowerCase());
+        const fonts = this.fonts();
+        const start = current && startsWithLetter(current) ? this.getIndex(current) + 1 : 0;
+
+        for (let i = 0; i < fonts.length; i++) {
+            const font = fonts[(start + i) % fonts.length];
+            if (startsWithLetter(font)) {
+                return font;
+            }
+        }
+
+        return null;
     }
 
     public clear(): void {

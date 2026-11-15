@@ -157,6 +157,20 @@ $box-padding: 20px;
         }
     }
 
+    .icon-gauge {
+        margin-top: 4px;
+
+        i {
+            width: 16px;
+            text-align: center;
+        }
+
+        [type='range'] {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
     [type='color'] {
         border: 0;
         background: 0;
@@ -220,7 +234,7 @@ $box-padding: 20px;
             grid-auto-columns: calc(100vw - $settingsWidth);
 
             &.mode-logo {
-                .title {
+                .title-row {
                     text-align: center;
                 }
             }
@@ -293,11 +307,41 @@ $box-padding: 20px;
             }
         }
 
+        .title-row {
+            font-size: 2.5em;
+            white-space: nowrap;
+        }
+
         .title {
             padding: 0 $small-gutter;
             height: 2em;
-            font-size: 2.5em;
+            font-size: inherit;
             line-height: 2em;
+        }
+
+        .title-icon {
+            vertical-align: middle;
+            margin-left: $small-gutter;
+            width: auto;
+        }
+
+        .title-row.has-icon {
+            contain: inline-size;
+            overflow-x: clip;
+
+            @supports (field-sizing: content) {
+                .title {
+                    width: auto;
+                    min-width: 2ch;
+                    max-width: 100%;
+                    field-sizing: content;
+                }
+            }
+
+            @supports not (field-sizing: content) {
+                display: flex;
+                align-items: center;
+            }
         }
 
         .body {
@@ -308,7 +352,7 @@ $box-padding: 20px;
     }
 }
 
-.mode-logo .title {
+.mode-logo .title-row {
     font-size: inherit !important;
 }
 
