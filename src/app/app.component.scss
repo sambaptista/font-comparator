@@ -29,19 +29,19 @@ $box-padding: 20px;
 .icon-button {
     display: inline-flex;
     align-items: center;
-    padding: 5px 10px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    font-weight: normal;
-    border: none;
-    height: 28px;
-    min-width: 8px;
-    line-height: 28px;
-    font-size: inherit;
-    font-family: inherit;
-    box-sizing: content-box;
     cursor: pointer;
+    box-sizing: content-box;
+    border: none;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 5px 10px;
+    min-width: 8px;
+    height: 28px;
     color: inherit;
+    font-weight: normal;
+    font-size: inherit;
+    line-height: 28px;
+    font-family: inherit;
     text-decoration: none;
 
     &.active {
@@ -63,8 +63,8 @@ $box-padding: 20px;
 
 .icon-button {
     border-radius: 999px;
-    line-height: 27px;
     font-size: 14px;
+    line-height: 27px;
 
     i {
         width: 16px !important;
@@ -75,15 +75,15 @@ $box-padding: 20px;
 // Boxes
 .setting-group,
 .model-tools {
-    background: white;
-    color: black;
-    padding: $box-padding;
     border-radius: 8px;
+    background: white;
+    padding: $box-padding;
+    color: black;
 }
 
 .github {
-    text-align: center;
     font-size: 42px;
+    text-align: center;
 
     a {
         color: white;
@@ -91,18 +91,18 @@ $box-padding: 20px;
 }
 
 .global-settings {
-    overflow: auto;
+    display: flex;
     position: fixed;
     top: 0;
-    left: $gutter;
     bottom: 0;
-    padding-top: $gutter;
-    padding-bottom: $gutter;
-    color: black;
-    width: $settingsWidth - $gutter;
-    display: flex;
+    left: $gutter;
     flex-direction: column;
     gap: $gutter;
+    padding-top: $gutter;
+    padding-bottom: $gutter;
+    width: $settingsWidth - $gutter;
+    overflow: auto;
+    color: black;
 
     & > .setting {
         display: flex;
@@ -158,9 +158,9 @@ $box-padding: 20px;
     }
 
     [type='color'] {
-        padding: 0;
         border: 0;
         background: 0;
+        padding: 0;
         width: 36px;
         height: 30px;
 
@@ -175,12 +175,12 @@ $box-padding: 20px;
 }
 
 .models {
-    margin: 0 0 0 $settingsWidth + calc($gutter / 2);
-    overflow: auto;
-    height: calc(100vh);
-    box-sizing: border-box;
     gap: $gutter;
+    box-sizing: border-box;
+    margin: 0 0 0 $settingsWidth + calc($gutter / 2);
     padding: 0 $gutter $gutter 0;
+    height: calc(100vh);
+    overflow: auto;
 
     &.vertical-layout {
         .model-tools {
@@ -236,21 +236,21 @@ $box-padding: 20px;
 .model {
     display: flex;
     align-items: flex-start;
-    border-radius: 10px;
-    box-sizing: border-box;
-    padding-top: $gutter;
     gap: $gutter;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding-top: $gutter;
 
     h1 {
         margin-top: 0;
     }
 
     .model-tools {
+        position: relative;
+        left: 10px;
         flex-shrink: 0;
         width: 260px;
         font-size: 16px;
-        position: relative;
-        left: 10px;
     }
 
     .model-sub-tools {
@@ -261,32 +261,32 @@ $box-padding: 20px;
 
     .model-body {
         display: flex;
-        flex-direction: column;
         flex: 1;
+        flex-direction: column;
+        gap: 0.5em;
         width: 100%;
         max-width: 70ch;
-        gap: 0.5em;
 
         $small-gutter: calc($gutter / 2);
 
         .title,
         .body {
             box-sizing: border-box;
+            outline: none;
             border: none;
-            font-family: inherit;
-            line-height: inherit;
-            color: inherit;
+            border-radius: 8px;
             background: transparent;
-            font-weight: inherit;
-            letter-spacing: inherit;
-            word-spacing: inherit;
+            width: 100%;
+            overflow: hidden;
+            color: inherit;
             font-style: inherit;
             font-variant: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            font-family: inherit;
+            letter-spacing: inherit;
             text-align: inherit;
-            overflow: hidden;
-            outline: none;
-            border-radius: 8px;
-            width: 100%;
+            word-spacing: inherit;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.2);
@@ -294,16 +294,16 @@ $box-padding: 20px;
         }
 
         .title {
+            padding: 0 $small-gutter;
+            height: 2em;
             font-size: 2.5em;
             line-height: 2em;
-            height: 2em;
-            padding: 0 $small-gutter;
         }
 
         .body {
-            font-size: 1em;
-            resize: none;
             padding: $small-gutter;
+            resize: none;
+            font-size: 1em;
         }
     }
 }
@@ -314,15 +314,15 @@ $box-padding: 20px;
 
 .fab {
     display: flex;
-    align-items: center;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
     justify-content: center;
+    align-items: center;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 0;
     width: 46px;
     height: 46px;
-    position: fixed;
-    padding: 0;
-    bottom: 20px;
-    right: 20px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
 
     i {
         position: relative;
@@ -333,8 +333,8 @@ $box-padding: 20px;
 
 .cdk-drag-preview {
     backdrop-filter: blur(10px);
-    background: transparent;
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
+    background: transparent;
 
     .body,
     .title {
@@ -343,11 +343,10 @@ $box-padding: 20px;
 }
 
 .cdk-drag-placeholder {
+    border: 2px dashed rgba(123, 123, 123, 0.5);
     * {
         opacity: 0;
     }
-
-    border: 2px dashed rgba(123, 123, 123, 0.5);
 }
 
 .cdk-drop-list-dragging .cdk-drag {

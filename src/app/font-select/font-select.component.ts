@@ -1,6 +1,6 @@
-import {Component, input, model, OnInit, output} from '@angular/core';
+import {Component, input, model, type OnInit, output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {Font} from '../services/font.service';
+import {type Font} from '../services/font.service';
 
 export type FontSelection = {
     selected: Font;

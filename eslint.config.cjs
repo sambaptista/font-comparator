@@ -26,6 +26,7 @@ module.exports = tseslint.config(
             '@angular-eslint/prefer-on-push-component-change-detection': 'off',
             '@angular-eslint/use-component-selector': 'off', // Some components are not template-able and thus do not need selector
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+            '@typescript-eslint/consistent-type-exports': 'error',
             '@typescript-eslint/explicit-member-accessibility': 'error',
             '@typescript-eslint/no-confusing-void-expression': 'off', // Don't create unncessary closure and we prefer code tersity anyway
             '@typescript-eslint/no-dynamic-delete': 'off',
@@ -42,20 +43,8 @@ module.exports = tseslint.config(
             '@typescript-eslint/no-unsafe-return': 'off',
             '@typescript-eslint/prefer-nullish-coalescing': 'off', // Usually a good idea, but sometimes dangerous false-positive
             '@typescript-eslint/unbound-method': 'off',
+            '@angular-eslint/no-implicit-take-until-destroyed': 'off', // Would be nice, but implementation is too naive and have false-positive, see https://github.com/angular-eslint/angular-eslint/issues/2929
             '@angular-eslint/runtime-localize': 'off', // Because we never use runtime translations loading
-            'no-restricted-imports': [
-                'error',
-                {
-                    paths: [
-                        {
-                            name: '@angular/material/table',
-                            importNames: ['MatCellDef'],
-                            message:
-                                'Instead use `import { TypedMatCellDef } from "@ecodev/natural";` and specify `dataSource` input in template: `*matCellDef="let element; dataSource: dataSource"`.',
-                        },
-                    ],
-                },
-            ],
             '@angular-eslint/prefer-signals': [
                 'error',
                 {
@@ -76,6 +65,12 @@ module.exports = tseslint.config(
                     type: 'element',
                     prefix: 'app',
                     style: 'kebab-case',
+                },
+            ],
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    fixStyle: 'inline-type-imports',
                 },
             ],
             '@typescript-eslint/explicit-function-return-type': [
@@ -160,7 +155,7 @@ module.exports = tseslint.config(
                     allowNullOrUndefined: true,
                 },
             ],
-            '@angular-eslint/template/i18n': 'off',
+            '@angular-eslint/template/i18n': 'off', // The app is not translated
         },
     },
 );

@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Service} from '@angular/core';
 import * as fonts from '../../assets/fonts.json';
 import {intersection} from 'es-toolkit';
-import {first, fromEvent, map, Observable, of} from 'rxjs';
+import {first, fromEvent, map, type Observable, of} from 'rxjs';
 
 export type Font = {
     family: string;
@@ -9,9 +9,7 @@ export type Font = {
     category: string;
 };
 
-@Injectable({
-    providedIn: 'root',
-})
+@Service()
 export class FontsService {
     private loadedFonts: Record<string, true> = {};
 

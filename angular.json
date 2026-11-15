@@ -4,15 +4,18 @@
     "newProjectRoot": "projects",
     "projects": {
         "font-comparator": {
+            "root": "",
+            "sourceRoot": "src",
             "projectType": "application",
+            "prefix": "app",
             "schematics": {
                 "@schematics/angular:component": {
                     "style": "scss"
+                },
+                "@schematics/angular:application": {
+                    "strict": true
                 }
             },
-            "root": "",
-            "sourceRoot": "src",
-            "prefix": "app",
             "architect": {
                 "build": {
                     "builder": "@angular/build:application",
@@ -22,16 +25,17 @@
                             "browser": ""
                         },
                         "index": "src/index.html",
+                        "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
-                        "tsConfig": "tsconfig.app.json",
-                        "inlineStyleLanguage": "scss",
+                        "tsConfig": "src/tsconfig.app.json",
                         "assets": ["src/favicon.ico", "src/assets"],
-                        "styles": ["src/styles.scss", "./node_modules/@fortawesome/fontawesome-free/css/all.css"],
-                        "scripts": [],
-                        "browser": "src/main.ts"
+                        "styles": ["src/styles.scss", "node_modules/@fortawesome/fontawesome-free/css/all.css"],
+                        "scripts": []
                     },
                     "configurations": {
                         "production": {
+                            "tsConfig": "src/tsconfig.app.prod.json",
+                            "outputHashing": "all",
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -42,11 +46,10 @@
                                     "type": "anyComponentStyle",
                                     "maximumError": "6kb"
                                 }
-                            ],
-                            "outputHashing": "all"
+                            ]
                         },
                         "development": {
-                          "optimization": false,
+                            "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true
@@ -70,11 +73,11 @@
                     "builder": "@angular/build:karma",
                     "options": {
                         "polyfills": ["zone.js", "zone.js/testing"],
-                        "tsConfig": "tsconfig.spec.json",
-                        "inlineStyleLanguage": "scss",
-                        "assets": ["src/favicon.ico", "src/assets"],
+                        "tsConfig": "src/tsconfig.spec.json",
+                        "karmaConfig": "src/karma.conf.js",
                         "styles": ["src/styles.scss"],
-                        "scripts": []
+                        "scripts": [],
+                        "assets": ["src/favicon.ico", "src/assets"]
                     }
                 },
                 "lint": {
@@ -87,30 +90,41 @@
             }
         }
     },
+    "cli": {
+        "schematicCollections": ["@angular-eslint/schematics"],
+        "packageManager": "pnpm",
+        "analytics": false
+    },
     "schematics": {
-      "@schematics/angular:component": {
-        "type": "component"
-      },
-      "@schematics/angular:directive": {
-        "type": "directive"
-      },
-      "@schematics/angular:service": {
-        "type": "service"
-      },
-      "@schematics/angular:guard": {
-        "typeSeparator": "."
-      },
-      "@schematics/angular:interceptor": {
-        "typeSeparator": "."
-      },
-      "@schematics/angular:module": {
-        "typeSeparator": "."
-      },
-      "@schematics/angular:pipe": {
-        "typeSeparator": "."
-      },
-      "@schematics/angular:resolver": {
-        "typeSeparator": "."
-      }
+        "@angular-eslint/schematics:application": {
+            "setParserOptionsProject": true
+        },
+        "@angular-eslint/schematics:library": {
+            "setParserOptionsProject": true
+        },
+        "@schematics/angular:component": {
+            "type": "component"
+        },
+        "@schematics/angular:directive": {
+            "type": "directive"
+        },
+        "@schematics/angular:service": {
+            "type": "service"
+        },
+        "@schematics/angular:guard": {
+            "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+            "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+            "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+            "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+            "typeSeparator": "."
+        }
     }
 }

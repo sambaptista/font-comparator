@@ -1,15 +1,15 @@
-import {AfterViewInit, Component, ElementRef, inject, OnInit, viewChildren} from '@angular/core';
-import {Font, FontsService} from './services/font.service';
+import {type AfterViewInit, Component, type ElementRef, inject, type OnInit, viewChildren} from '@angular/core';
+import {type Font, FontsService} from './services/font.service';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 
 import {FormsModule} from '@angular/forms';
-import {FontSelectComponent, FontSelection} from './font-select/font-select.component';
-import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
+import {FontSelectComponent, type FontSelection} from './font-select/font-select.component';
+import {type CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
 import * as categories from '../assets/categories.json';
 import * as fonts from '../assets/fonts.json';
 import {Subject, takeUntil} from 'rxjs';
-import {FontSettings, FontSettingsComponent} from './font-settings/font-settings.component';
-import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
+import {type FontSettings, FontSettingsComponent} from './font-settings/font-settings.component';
+import {type CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
 import {hex} from 'wcag-contrast';
 
 type Model = FontSettings & {
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     public models: Model[] = [this.defaultModel];
     public titleText = 'Culture of typography';
     public bodyText =
-        'Typography is more than mere text formatting. It\'s the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.';
+        "Typography is more than mere text formatting. It's the art and science of visually presenting information, where every character, space, and typographic element contributes to readability, understanding, and impact. Typography encompasses font selection, layout, spacing, color, and visual hierarchy, providing a visual language that guides the reader through the content. Well-designed typography can enhance clarity, bolster credibility, and evoke emotion. It transcends words to bring writing to life, making each text a unique and memorable visual experience.";
     public fonts: Font[] = (fonts as any).default;
     private firstInteraction = new Subject<void>();
 
