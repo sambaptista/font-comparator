@@ -308,6 +308,7 @@ $box-padding: 20px;
         }
 
         .title-row {
+            overflow-x: clip;
             font-size: 2.5em;
             white-space: nowrap;
         }
@@ -320,14 +321,29 @@ $box-padding: 20px;
         }
 
         .title-icon {
-            vertical-align: middle;
+            vertical-align: baseline;
             margin-left: $small-gutter;
             width: auto;
         }
 
+        .guides {
+            display: inline-block;
+            position: relative;
+            vertical-align: baseline;
+            width: 0;
+            height: 0;
+
+            span {
+                position: absolute;
+                top: 0;
+                left: -100vw;
+                border-top: 1px solid white;
+                width: 200vw;
+            }
+        }
+
         .title-row.has-icon {
             contain: inline-size;
-            overflow-x: clip;
 
             @supports (field-sizing: content) {
                 .title {
@@ -340,7 +356,7 @@ $box-padding: 20px;
 
             @supports not (field-sizing: content) {
                 display: flex;
-                align-items: center;
+                align-items: baseline;
             }
         }
 
@@ -377,17 +393,18 @@ $box-padding: 20px;
 
 .cdk-drag-preview {
     backdrop-filter: blur(10px);
+    outline: 2px solid rgba(127, 127, 127, 0.9);
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
-    background: transparent;
+    background: rgba(127, 127, 127, 0.25);
 
     .body,
-    .title {
+    .title-row {
         opacity: 0;
     }
 }
 
 .cdk-drag-placeholder {
-    border: 2px dashed rgba(123, 123, 123, 0.5);
+    border: 2px dashed rgba(127, 127, 127, 0.9);
     * {
         opacity: 0;
     }

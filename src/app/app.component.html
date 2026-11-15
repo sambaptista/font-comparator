@@ -62,7 +62,7 @@
                 (resetFired)="resetGlobalFontSettings()"
             />
 
-            <div class="horizontal gap">
+            <div class="horizontal gap wrap">
                 <label class="checkbox">
                     <input
                         type="checkbox"
@@ -115,6 +115,14 @@
                     }
                 }
 
+                <button
+                    class="icon-button"
+                    [class.active]="globalSettings.guides"
+                    (click)="globalSettings.guides = !globalSettings.guides; persist()"
+                >
+                    <i class="fa-solid fa-grip-lines"></i>
+                </button>
+
                 <input #iconFile type="file" accept=".svg,image/svg+xml" hidden (change)="loadIcon($event)" />
                 <button class="icon-button" [class.active]="iconUrl()" (click)="iconFile.click()">
                     <i class="fa-solid fa-image"></i>
@@ -137,6 +145,9 @@
                         [ngModelOptions]="{standalone: true}"
                         [(ngModel)]="globalSettings.iconSize"
                         (change)="persist()"
+                        (pointerdown)="showGuides.set(true)"
+                        (pointerup)="showGuides.set(false)"
+                        (pointercancel)="showGuides.set(false)"
                     />
                 </div>
                 <div class="horizontal gap icon-gauge">
@@ -149,6 +160,9 @@
                         [ngModelOptions]="{standalone: true}"
                         [(ngModel)]="globalSettings.iconOffset"
                         (change)="persist()"
+                        (pointerdown)="showGuides.set(true)"
+                        (pointerup)="showGuides.set(false)"
+                        (pointercancel)="showGuides.set(false)"
                     />
                 </div>
             }
@@ -252,7 +266,7 @@
                     }
 
                     <div class="gap horizontal">
-                        <button class="button" (click)="duplicate(model)"><i class="fa-solid fa-copy"></i></button>
+                        <button class="button" (click)="duplicate($index)"><i class="fa-solid fa-copy"></i></button>
                         <button class="button warn" (click)="remove($index)"><i class="fa-solid fa-trash"></i></button>
 
                         @if (model && model.bodyFont) {
@@ -289,21 +303,30 @@
                     [style.letterSpacing.em]="getFontSetting(model, 'letterSpacing')"
                 >
                     <div class="title-row" [class.has-icon]="iconUrl()">
+                        @let metrics = getTitleMetrics(model);
                         @if (iconUrl(); as url) {
                             <img
                                 class="title-icon"
                                 alt=""
                                 [src]="url"
-                                [style.height.em]="globalSettings.iconSize"
-                                [style.transform]="`translateY(${globalSettings.iconOffset}em)`"
+                                [style.height.em]="globalSettings.iconSize * metrics.top"
+                                [style.marginTop.em]="-globalSettings.iconSize * metrics.top"
+                                [style.transform]="`translateY(${globalSettings.iconOffset * metrics.top}em)`"
                             />
+                        }
+                        @if (globalSettings.guides || showGuides()) {
+                            <span class="guides">
+                                <span class="ascender" [style.top.em]="-metrics.ascender"></span>
+                                <span class="cap-height" [style.top.em]="-metrics.capHeight"></span>
+                                <span class="x-height" [style.top.em]="-metrics.xHeight"></span>
+                                <span class="baseline"></span>
+                                <span class="descender" [style.top.em]="metrics.descender"></span>
+                            </span>
                         }
                         <input
                             class="title"
                             [ngModelOptions]="{standalone: true}"
-                            [style.fontFamily]="
-                                model.titleFont?.family || globalSettings.titleFont?.family || model.bodyFont?.family
-                            "
+                            [style.fontFamily]="getTitleFamily(model)"
                             [(ngModel)]="titleText"
                             (change)="autoresize()"
                         />

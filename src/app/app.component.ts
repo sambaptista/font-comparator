@@ -41,6 +41,15 @@ type Settings = FontSettings & {
     icon: string | null;
     iconSize: number;
     iconOffset: number;
+    guides: boolean;
+};
+
+type TitleMetrics = {
+    ascender: number;
+    capHeight: number;
+    xHeight: number;
+    descender: number;
+    top: number;
 };
 
 @Component({
@@ -87,10 +96,17 @@ export class AppComponent implements OnInit, AfterViewInit {
         icon: null,
         iconSize: 1,
         iconOffset: 0,
+        guides: false,
         ...this.defaultFontSettings,
     };
 
     public readonly iconUrl = signal<string | null>(null);
+    public readonly showGuides = signal(false);
+
+    private readonly fontsVersion = signal(0);
+    private readonly titleMetrics = new Map<string, TitleMetrics>();
+    private measureContext: CanvasRenderingContext2D | null = null;
+    private defaultFamily: string | null = null;
 
     /**
      * Variants
@@ -127,6 +143,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public handleEvents(): void {
+        document.fonts.addEventListener('loadingdone', () => {
+            this.titleMetrics.clear();
+            this.fontsVersion.update(version => version + 1);
+        });
+
         document.addEventListener('keydown', event => {
             if (document.activeElement !== document.body && document.activeElement !== document.documentElement) {
                 return;
@@ -314,8 +335,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         return Object.keys(filteredObj);
     }
 
-    public duplicate(model: Model): void {
-        this.addModel(model);
+    public duplicate(index: number): void {
+        this.models.splice(index + 1, 0, {...this.models[index]});
+        setTimeout(() => {
+            this.modelElements()
+                .at(index + 1)!
+                .nativeElement.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        }, 20);
         this.persist();
     }
 
@@ -384,6 +410,46 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public getFontSetting(model: Model, name: keyof FontSettings): number | null {
         return model[name] ?? this.globalSettings[name] ?? null;
+    }
+
+    public getTitleFamily(model: Model): string | undefined {
+        return model.titleFont?.family || this.globalSettings.titleFont?.family || model.bodyFont?.family;
+    }
+
+    /**
+     * Returns the title font lines, in em, as distances from the baseline
+     */
+    public getTitleMetrics(model: Model): TitleMetrics {
+        this.fontsVersion();
+
+        const family = this.getTitleFamily(model);
+        this.defaultFamily ??= getComputedStyle(document.body).fontFamily;
+        const font = [
+            this.globalSettings.italic ? 'italic' : 'normal',
+            this.getFontSetting(model, 'fontWeight') ?? 400,
+            '100px',
+            family ? `"${family}"` : this.defaultFamily,
+        ].join(' ');
+
+        let metrics = this.titleMetrics.get(font);
+        if (!metrics) {
+            this.measureContext ??= document.createElement('canvas').getContext('2d')!;
+            const context = this.measureContext;
+            context.font = font;
+
+            const ascender = context.measureText('bdfhkl').actualBoundingBoxAscent / 100;
+            const capHeight = context.measureText('H').actualBoundingBoxAscent / 100;
+            metrics = {
+                ascender,
+                capHeight,
+                xHeight: context.measureText('x').actualBoundingBoxAscent / 100,
+                descender: context.measureText('gjpqy').actualBoundingBoxDescent / 100,
+                top: Math.max(ascender, capHeight),
+            };
+            this.titleMetrics.set(font, metrics);
+        }
+
+        return metrics;
     }
 
     public resetFontSettings(model: Model): void {
