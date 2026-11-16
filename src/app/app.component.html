@@ -269,19 +269,20 @@
                         <button class="button" (click)="duplicate($index)"><i class="fa-solid fa-copy"></i></button>
                         <button class="button warn" (click)="remove($index)"><i class="fa-solid fa-trash"></i></button>
 
-                        @if (model && model.bodyFont) {
+                        @let mainFont = getMainFont(model);
+                        @if (mainFont) {
                             <a
                                 class="button"
                                 target="_blank"
-                                [attr.href]="`https://fonts.google.com/specimen/${model.bodyFont.family}`"
+                                [attr.href]="`https://fonts.google.com/specimen/${mainFont.family}`"
                                 ><i class="fa-solid fa-link"></i
                             ></a>
                         }
 
                         <button class="button" cdkDragHandle><i class="fa-solid fa-up-down-left-right"></i></button>
                         <div class="spacer"></div>
-                        @if (model.bodyFont?.variants?.length) {
-                            {{ model.bodyFont.variants.length }} variants
+                        @if (mainFont?.variants?.length) {
+                            {{ mainFont.variants.length }} variants
                         }
                     </div>
 

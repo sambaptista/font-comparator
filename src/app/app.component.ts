@@ -413,7 +413,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     public getTitleFamily(model: Model): string | undefined {
-        return model.titleFont?.family || this.globalSettings.titleFont?.family || model.bodyFont?.family;
+        return this.getTitleFont(model)?.family;
+    }
+
+    private getTitleFont(model: Model): Font | null {
+        return model.titleFont || this.globalSettings.titleFont || model.bodyFont || null;
+    }
+
+    /**
+     * Returns the font that the link and the variants counter of the model describe
+     */
+    public getMainFont(model: Model): Font | null {
+        return this.globalSettings.logo ? this.getTitleFont(model) : model.bodyFont || null;
     }
 
     /**
